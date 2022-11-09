@@ -2,7 +2,8 @@ name: Test & Upload to Pactflow
 
 on:
   push:
-
+  workflow_dispatch:
+  
 env:
   PACT_BROKER_BASE_URL: https://dennisphetsomphou.pactflow.io
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN_FOR_CI_CD_WORKSHOP }}
