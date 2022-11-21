@@ -1,311 +1,314 @@
----
-openapi: 3.0.3
+openapi: 3.0.1
 info:
-  title: Example Products API (example based)
-  version: 1.0.0
-  contact: {}
+  title: '@cantire-corp/cds.notifications-sender-api'
+  version: 0.1.11
+  description: Notification Sender API
+  license:
+    name: ISC
+  contact:
+    name: CDS Team
 servers:
-  - url: "{{host}}"
+  - url: /notification
 paths:
-  "/product/{id}":
+  /health:
     get:
-      summary: "GET /products/:id"
-      description: Get single product
-      operationId: "get/products/:id"
+      tags:
+        - health
+      summary: Service health
+      description: Service health
+      operationId: get-health
       responses:
-        "200":
-          description: "GET /products/:id"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: "*"
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Content-Length:
-              schema:
-                type: string
-                example: "79"
-            Date:
-              schema:
-                type: string
-                example: "Tue, 04 May 2021 10:22:58 GMT"
-            ETag:
-              schema:
-                type: string
-                example: "W/\"4f-aj8zSH7MB6cvQn56hAlIKZ+G1BE\""
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
+        '200':
+          description: An Health object
           content:
-            application/json:
+            application/json; charset=utf-8:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: "09"
-                  name:
-                    type: string
-                    example: Gem Visa
-                  price:
-                    type: number
-                    example: 99.99
-                  type:
-                    type: string
-                    example: CREDIT_CARD
-                  version:
-                    type: string
-                    example: v1
-              examples:
-                "GET /products/:id":
-                  value:
-                    id: "09"
-                    name: Gem Visa
-                    price: 99.99
-                    type: CREDIT_CARD
-                    version: v1
-        "404":
-          description: "GET /products/:id (404)"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: "*"
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Content-Length:
-              schema:
-                type: string
-                example: "79"
-            Date:
-              schema:
-                type: string
-                example: "Tue, 04 May 2021 10:22:58 GMT"
-            ETag:
-              schema:
-                type: string
-                example: "W/\"4f-aj8zSH7MB6cvQn56hAlIKZ+G1BE\""
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-              examples:
-                "GET /products/:id (404)":
-                  value: {}
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-  /products:
-    get:
-      summary: GET /products
-      description: Get all products
-      operationId: get/products
-      responses:
-        "200":
-          description: GET /products
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: "*"
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Content-Length:
-              schema:
-                type: string
-                example: "246"
-            Date:
-              schema:
-                type: string
-                example: "Tue, 04 May 2021 10:30:59 GMT"
-            ETag:
-              schema:
-                type: string
-                example: "W/\"f6-H4sUa2b5P0f86z9trNUSS1xGqeo\""
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: "09"
-                    name:
-                      type: string
-                      example: Gem Visa
-                    price:
-                      type: number
-                      example: 99.99
-                    type:
-                      type: string
-                      example: CREDIT_CARD
-                    version:
-                      type: string
-                      example: v1
-              examples:
-                GET /products:
-                  value:
-                    - id: "09"
-                      name: Gem Visa
-                      price: 99.99
-                      type: CREDIT_CARD
-                      version: v1
-                    - id: "10"
-                      name: 28 Degrees
-                      price: 49.49
-                      type: CREDIT_CARD
-                      version: v1
-                    - id: "11"
-                      name: MyFlexiPay
-                      price: 16.5
-                      type: PERSONAL_LOAN
-                      version: v2
+                $ref: '#/components/schemas/HealthGet200ApplicationJsonResponse'
+              example:
+                build: string
+                message: string
+                status: string
+                uptime: 0
+  /send:
     post:
-      summary: POST /products/ (200)
-      description: Create a product
-      operationId: post/products/(200)
+      tags:
+        - Notification
+      summary: Sends notification with specified provider
+      description: Sends notification with specified provider
+      operationId: post-send
       requestBody:
         content:
-          application/json:
+          application/json; charset=utf-8:
             schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: "09"
-                name:
-                  type: string
-                  example: Gem Visa
-                price:
-                  type: number
-                  example: 99.99
-                type:
-                  type: string
-                  example: CREDIT_CARD
-                version:
-                  type: string
-                  example: v1
+              $ref: '#/components/schemas/SendPostRequest'
             example:
-              id: "09"
-              name: Gem Visa
-              price: 99.99
-              type: CREDIT_CARD
-              version: v1
+              storeNumber: '0100'
+              template: Chit_Order_cancelled_customer
+              communicationType: SMS
+              provider: Twilio
+              language: fr
+              destinationPhone:
+                - '6135550113'
+              destinationEmail: []
+              templateContent:
+                - name: ORDER_NUMBER
+                  value: this-is-order-number
       responses:
-        "200":
-          description: POST /products/ (200)
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: "*"
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Content-Length:
-              schema:
-                type: string
-                example: "79"
-            Date:
-              schema:
-                type: string
-                example: "Sun, 09 May 2021 12:29:53 GMT"
-            ETag:
-              schema:
-                type: string
-                example: "W/\"4f-7upA8VUHobjcwMU2JZU+mGYVfEo\""
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
+        '200':
+          description: Notification was successfully sent
+        '400':
+          description: Request parameters validation error
           content:
-            application/json:
+            application/json; charset=utf-8:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: "09"
-                  name:
-                    type: string
-                    example: Gem Visa
-                  price:
-                    type: number
-                    example: 99.99
-                  type:
-                    type: string
-                    example: CREDIT_CARD
-                  version:
-                    type: string
-                    example: v1
-              examples:
-                POST /products/ (200):
-                  value:
-                    id: "09"
-                    name: Gem Visa
-                    price: 99.99
-                    type: CREDIT_CARD
-                    version: v1
-        "400":
-          description: POST /products/ (400)
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: "*"
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Content-Length:
-              schema:
-                type: string
-                example: "29"
-            Date:
-              schema:
-                type: string
-                example: "Sun, 09 May 2021 13:07:38 GMT"
-            ETag:
-              schema:
-                type: string
-                example: "W/\"1d-pnhbRSD4NZML3cnaJuyottC+RiE\""
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
+                $ref: '#/components/schemas/SendPost400ApplicationJsonResponse'
+              example:
+                errorCode: 400
+                errorMessage: No Valid Provider Account
+                errorDetails:
+                  - Please configure Store 0100 for this service or allow service through Global Account
+                template: ShareCart
+                communicationType: SMS
+                provider: Twilio
+        '500':
+          description: Internal server error
           content:
-            application/json:
+            application/json; charset=utf-8:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: invalid product
-              examples:
-                POST /products/ (400):
-                  value:
-                    message: invalid product
-tags: []
+                $ref: '#/components/schemas/SendPost500ApplicationJsonResponse'
+              example:
+                status: failed
+                message: System Error.
+  /execute-flow:
+    post:
+      tags:
+        - Notification
+      summary: Executes flow with specified provider by template name
+      description: Executes flow with specified provider by template name
+      operationId: post-execute-flow
+      requestBody:
+        content:
+          application/json; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/Execute-flowPostRequest'
+            example:
+              storeNumber: '0100'
+              template: ShareCart
+              communicationType: SMS
+              language: fr
+              provider: Twillio
+              from: 647XXXXXXX
+              destinationPhone: []
+              destinationEmail: []
+              templateContent:
+                - name: name
+                  value: test
+                - name: sc_url
+                  value: test
+      responses:
+        '200':
+          description: Execution created
+        '400':
+          description: Request parameters validation error
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Execute-flowPost400ApplicationJsonResponse'
+              example:
+                errorCode: 200
+                errorMessage: Failed to execute flow. The requested resource /Flows/FW53d093d51446b9bf88a40f6b255d2a40/Executions was not found
+                errorDetails:
+                  - 380-681-2345
+                  - 380-681-2345
+                template: ShareCart
+                provider: Twilio
+        '500':
+          description: Internal server error
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Execute-flowPost500ApplicationJsonResponse'
+              example:
+                status: failed
+                message: System Error.
+components:
+  schemas:
+    HealthGet200ApplicationJsonResponse:
+      type: object
+      properties:
+        build:
+          type: string
+        message:
+          type: string
+        status:
+          type: string
+        uptime:
+          type: number
+    SendPostRequest:
+      required:
+        - communicationType
+        - language
+        - provider
+        - storeNumber
+        - template
+        - templateContent
+      type: object
+      properties:
+        storeNumber:
+          type: string
+        template:
+          type: string
+        communicationType:
+          type: string
+        provider:
+          type: string
+        language:
+          type: string
+        destinationEmail:
+          type: array
+          items:
+            type: string
+        destinationPhone:
+          type: array
+          items:
+            type: string
+        templateContent:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+    SendPost400ApplicationJsonResponse:
+      required:
+        - errorCode
+        - errorDetails
+        - errorMessage
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        errorMessage:
+          type: string
+        errorDetails:
+          type: array
+          items:
+            type: string
+        template:
+          type: string
+        communicationType:
+          type: string
+        provider:
+          type: string
+      example:
+        errorCode: 400
+        errorMessage: No Valid Provider Account
+        errorDetails:
+          - Please configure Store 0100 for this service or allow service through Global Account
+        template: ShareCart
+        communicationType: SMS
+        provider: Twilio
+    SendPost500ApplicationJsonResponse:
+      required:
+        - message
+        - status
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      example:
+        status: failed
+        message: System Error.
+    Execute-flowPostRequest:
+      required:
+        - communicationType
+        - language
+        - provider
+        - storeNumber
+        - template
+        - templateContent
+      type: object
+      properties:
+        storeNumber:
+          type: string
+        template:
+          type: string
+        communicationType:
+          type: string
+        provider:
+          type: string
+        language:
+          type: string
+        destinationEmail:
+          type: array
+          items:
+            type: string
+        destinationPhone:
+          type: array
+          items:
+            type: string
+        templateContent:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+    Execute-flowPost400ApplicationJsonResponse:
+      required:
+        - errorCode
+        - errorDetails
+        - errorMessage
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        errorMessage:
+          type: string
+        errorDetails:
+          type: string
+        template:
+          type: string
+        communicationType:
+          type: string
+        provider:
+          type: string
+      example:
+        errorCode: 200
+        errorMessage: Failed to execute flow. The requested resource /Flows/FW53d093d51446b9bf88a40f6b255d2a40/Executions was not found
+        errorDetails:
+          - 380-681-2345
+          - 380-681-2345
+        template: ShareCart
+        provider: Twilio
+    Execute-flowPost500ApplicationJsonResponse:
+      required:
+        - message
+        - status
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      example:
+        status: failed
+        message: System Error.
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: []
+  - apiKeyQuery: []

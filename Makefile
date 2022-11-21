@@ -1,6 +1,6 @@
-PACTICIPANT ?= "pactflow-example-bi-directional-provider-postman"
+PACTICIPANT ?= "cds.notifications-sender-api"
 GITHUB_REPO := "pactflow/example-bi-directional-provider-postman"
-VERSION?=$(shell npx -y absolute-version)
+VERSION?=1.8.14
 BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
 
 ## ====================
@@ -9,7 +9,7 @@ BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
 OAS_PATH=oas/swagger.yml
 REPORT_PATH?=$(shell ls newman/*)
 REPORT_FILE_CONTENT_TYPE?=text/plain
-VERIFIER_TOOL?=postman
+VERIFIER_TOOL?=dredd
 
 ## =====================
 ## Build/test tasks
