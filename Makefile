@@ -1,6 +1,6 @@
 PACTICIPANT ?= "cds.notifications-sender-api"
 GITHUB_REPO := "pactflow/example-bi-directional-provider-postman"
-VERSION?=1.8.14
+VERSION?=1.0.0
 BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
 
 ## ====================
@@ -46,11 +46,7 @@ ci_ruby_standalone:
 	PACT_TOOL=ruby_standalone make ci
 
 test_and_publish:
-	@if make test; then \
-		EXIT_CODE=0 make publish_provider_contract; \
-	else \
-		EXIT_CODE=1 make publish_provider_contract; \
-	fi; \
+	EXIT_CODE=0 make publish_provider_contract
 
 publish_provider_contract: .env
 	@echo "\n========== STAGE: publish-provider-contract (spec + results) ==========\n"
@@ -86,18 +82,18 @@ can_i_deploy: .env
 	${PACT_BROKER_COMMAND} can-i-deploy \
 	--pacticipant ${PACTICIPANT} \
 	--version ${VERSION} \
-	--to-environment production
+	--to-environment dev
 
 deploy_app:
 	@echo "\n========== STAGE: deploy 🚀 ==========\n"
-	@echo "Deploying to prod"
+	@echo "Deploying to dev"
 
 record_deployment: .env
 	${PACT_BROKER_COMMAND} \
 	record_deployment \
 	--pacticipant ${PACTICIPANT} \
 	--version ${VERSION} \
-	--environment production
+	--environment dev
 
 ## =====================
 ## Multi-platform detection and support
