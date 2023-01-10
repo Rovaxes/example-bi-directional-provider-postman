@@ -1,4 +1,4 @@
-PACTICIPANT ?= "cds.category-experience-api"
+PACTICIPANT ?= "cds.frontier-experience-api"
 GITHUB_REPO := "pactflow/example-bi-directional-provider-postman"
 VERSION?=1.0.0
 BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
