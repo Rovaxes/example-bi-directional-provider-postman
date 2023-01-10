@@ -1,8 +1,13 @@
 # Dredd Tests
+
+## Pass: GET (200) /api/v1/categories/DC0000004
+
+## Pass: GET (400) /api/v1/categories/DC0000004
+
+## Pass: GET (500) /api/v1/categories/DC0000004
+
+## Pass: GET (200) /api/v1/categories?level=1
+
+## Pass: GET (400) /api/v1/categories?level=1
+
 ## Pass: GET (200) /health
-## Pass: POST (200) /send
-## Pass: POST (400) /send
-## Pass: POST (500) /send
-## Pass: POST (200) /execute-flow
-## Pass: POST (400) /execute-flow
-## Pass: POST (500) /execute-flow
