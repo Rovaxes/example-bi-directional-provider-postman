@@ -48,7 +48,7 @@ paths:
         '200':
           description: Ok
           content:
-            "image/*":
+            application/json:
               schema:
                 type: string
                 format: byte
