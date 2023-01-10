@@ -51,7 +51,6 @@ paths:
             application/json:
               schema:
                 type: string
-                format: byte
       description: Get Asset from SKU ID.
       security: []
       parameters:
