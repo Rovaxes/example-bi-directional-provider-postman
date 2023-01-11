@@ -59,6 +59,7 @@ info:
 paths:
   /signin/access/token:
     post:
+      operationId: PostAccessToken
       summary: Signin user via Gigya's JWT
       description: |
         Login a customer into system.
@@ -87,6 +88,7 @@ paths:
               properties:
                 rememberMe:
                   type: boolean
+                  example: false
         required: true
       responses:
         '200':
@@ -118,6 +120,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /signin/triangleId:
     post:
+      operationId: PostTriangleId
       summary: Signin user via CTFS access token
       description: |
         Login a ctfs customer into system.
@@ -131,6 +134,7 @@ paths:
               properties:
                 token:
                   type: string
+                  example: token
         required: true
       responses:
         '200':
@@ -153,6 +157,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /signin/rba-tmx:
     post:
+      operationId: PostRbaTmx
       summary: Signin the user with RBA using ThreatMetrix service
       description: |
         Login a customer into a system based on ThreatMetrix service.
@@ -191,11 +196,14 @@ paths:
               properties:
                 loginID:
                   type: string
+                  example: loginID
                 password:
                   type: string
+                  example: password
                 deviceID:
                   type: string
                   description: gigya device identificator
+                  example: deviceID
                 targetEnv:
                   type: string
                   description: Possible values "mobile", "browser"
@@ -310,6 +318,7 @@ paths:
                     stack: 'Error: Validation error(s)'
   /refresh/access/token:
     post:
+      operationId: PostRefreshAccessToken
       summary: Updates Access-Token with new payload.
       description: |
         Cookie `Access-Token` are mandatory for current endpoint.
@@ -326,6 +335,8 @@ paths:
                   description: |
                     Hybris's id to identify user
                   example: exampleID
+              example:
+                ecomId: exampleToken
         required: true
       responses:
         '200':
@@ -364,6 +375,7 @@ paths:
                     stack: 'Error: CDS jwt malformed'
   /refresh/hybris/access/token:
     get:
+      operationId: GetHybrisToken
       summary: Refresh Hybris access token.
       tags:
         - Token refresh
@@ -410,6 +422,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /signout:
     get:
+      operationId: GetSignout
       summary: Logout a customer
       description: >
         Signout through quits DSS session.
@@ -440,6 +453,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /invalidate/password-changed:
     post:
+      operationId: PostInvalidateChange
       summary: API endpoint for killing active sessions
       description: |
         The method should be called after changing a password.
@@ -500,6 +514,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /invalidate/password-updated:
     post:
+      operationId: PostInvalidateUpdate
       summary: API endpoint for killing active sessions
       description: |
         The method should be called after password was updated.
@@ -514,6 +529,8 @@ paths:
                 UID:
                   type: string
                   example: eefb10e2c9014f608fdec29a050cc3d6
+              example:
+                UID: eefb10e2c9014f608fdec29a050cc3d6
         required: true
       responses:
         '200':
@@ -540,6 +557,7 @@ paths:
                     stack: 'Error: Validation error(s)'
   /sso/check-cookie:
     get:
+      operationId: GetCheckCookie
       summary: Check cookie if a user has already logged in.
       description: >
         For SSO (single sign-on) approach. When you sign in at one banner you
@@ -601,6 +619,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /sso/set-cookie:
     get:
+      operationId: GetSetCookie
       summary: Set cookie to the refferer domain
       description: |
         Set cookie to the refferer domain.
@@ -678,6 +697,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /sso/3-party-cookie/enabled:
     get:
+      operationId: GetCookieEnabled
       summary: Check 3rd party cookies support
       description: |
         Check if 3rd party cookies enabled for client
@@ -717,6 +737,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /sso/signout:
     get:
+      operationId: GetSSOSignout
       summary: Logout from all banners
       description: >
         For SSO (single sign-on) approach. Sign out (removes cookies
@@ -753,6 +774,7 @@ paths:
             Redirects to the referrer url
   /gigya/social/link-account:
     post:
+      operationId: PostSocial
       summary: Link user's account
       tags:
         - Social
@@ -809,8 +831,9 @@ paths:
               examples:
                 response:
                   value: 'Error: User not authorized'
+                  
 servers:
-  - url: https://virtserver.swaggerhub.com/CantireCorp/cds.api.authorization/1.0.0
+  - url: //localhost:3001
 components:
   schemas:
     ErrorResponse:
