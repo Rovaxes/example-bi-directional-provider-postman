@@ -1,528 +1,817 @@
-components:
-    examples: {}
-    headers: {}
-    parameters: {}
-    requestBodies: {}
-    responses: {}
-    schemas:
-        iUrl:
-            properties:
-                url:
-                    type: string
-                hreflang:
-                    type: string
-            required:
-                - url
-                - hreflang
-            type: object
-            additionalProperties: false
-        iSubCategory:
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-                url:
-                    type: string
-                image:
-                    type: string
-                searchLink:
-                    type: string
-                isFitmentRequired:
-                    type: boolean
-                isRelatedCategory:
-                    type: boolean
-                subcategories:
-                    items:
-                        $ref: '#/components/schemas/iSubCategory'
-                    type: array
-            required:
-                - id
-                - name
-                - url
-                - image
-                - searchLink
-                - isFitmentRequired
-                - isRelatedCategory
-                - subcategories
-            type: object
-            additionalProperties: false
-        iBreadcrumb:
-            properties:
-                label:
-                    type: string
-                url:
-                    type: string
-            required:
-                - label
-                - url
-            type: object
-            additionalProperties: false
-        iCategory:
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-                description:
-                    type: string
-                url:
-                    items:
-                        $ref: '#/components/schemas/iUrl'
-                    type: array
-                image:
-                    type: string
-                subcategories:
-                    items:
-                        $ref: '#/components/schemas/iSubCategory'
-                    type: array
-                breadcrumbList:
-                    items:
-                        $ref: '#/components/schemas/iBreadcrumb'
-                    type: array
-                isFitmentRequired:
-                    type: boolean
-                noIndex:
-                    type: boolean
-                noFollow:
-                    type: boolean
-                productWheelType:
-                    type: string
-                    nullable: true
-                defaultView:
-                    type: string
-                seoTitle:
-                    type: string
-                seoCopy:
-                    type: string
-                seoDescription:
-                    type: string
-                canonicalUrl:
-                    type: string
-                searchLink:
-                    type: string
-            required:
-                - id
-                - name
-                - description
-                - url
-                - image
-                - breadcrumbList
-                - isFitmentRequired
-                - noIndex
-                - noFollow
-                - productWheelType
-                - defaultView
-                - seoTitle
-                - seoCopy
-                - seoDescription
-                - canonicalUrl
-                - searchLink
-            type: object
-            additionalProperties: false
-        CdsError:
-            properties:
-                requestId:
-                    anyOf:
-                        -
-                            type: string
-                        -
-                            type: number
-                            format: double
-                errOrigin:
-                    type: string
-                statusCode:
-                    type: number
-                    format: double
-                error:
-                    type: string
-                message:
-                    type: string
-                errCode:
-                    type: string
-                data: {}
-                errors:
-                    items:
-                        type: string
-                    type: array
-                stack:
-                    type: string
-                isCdsError:
-                    type: boolean
-            required:
-                - message
-            type: object
-            additionalProperties: false
-        BreadcrumbData:
-            properties:
-                name:
-                    type: string
-                url:
-                    type: string
-            required:
-                - name
-                - url
-            type: object
-            additionalProperties: false
-        Image:
-            properties:
-                imageType:
-                    type: string
-                format:
-                    type: string
-                url:
-                    type: string
-                altText:
-                    type: string
-                galleryIndex:
-                    type: number
-                    format: double
-                code:
-                    type: string
-                name:
-                    type: string
-                description:
-                    type: string
-                damPath:
-                    type: string
-                order:
-                    type: string
-                videoImageThumbnailURL:
-                    type: string
-                videoImageThumbnailDAMPath:
-                    type: string
-                imageSpinIndicator:
-                    type: boolean
-                isListingThumbnailImage:
-                    type: boolean
-                mediaType:
-                    type: string
-                damCreateDate:
-                    type: string
-                    format: date-time
-                isPrimary:
-                    type: boolean
-            required:
-                - imageType
-                - format
-                - url
-                - altText
-                - galleryIndex
-                - code
-                - name
-                - description
-                - damPath
-                - order
-                - videoImageThumbnailURL
-                - videoImageThumbnailDAMPath
-                - imageSpinIndicator
-                - isListingThumbnailImage
-                - mediaType
-                - damCreateDate
-                - isPrimary
-            type: object
-            additionalProperties: false
-        HreflangLink:
-            properties:
-                href:
-                    type: string
-                hreflang:
-                    type: string
-            required:
-                - href
-                - hreflang
-            type: object
-            additionalProperties: false
-        CategoryHierarchy:
-            properties:
-                breadcrumbData:
-                    items:
-                        $ref: '#/components/schemas/BreadcrumbData'
-                    type: array
-                canonicalURL:
-                    type: string
-                categoryWheelType:
-                    type: string
-                currentCategoryImage:
-                    $ref: '#/components/schemas/Image'
-                description:
-                    type: string
-                fitmentRequired:
-                    type: boolean
-                hreflangLinkData:
-                    items:
-                        $ref: '#/components/schemas/HreflangLink'
-                    type: array
-                id:
-                    type: string
-                image:
-                    $ref: '#/components/schemas/Image'
-                lastModified:
-                    type: string
-                    format: date-time
-                metaRobot:
-                    type: string
-                name:
-                    type: string
-                productListFormat:
-                    type: string
-                seoDescription:
-                    type: string
-                seoTitle:
-                    type: string
-                seoCopyBlock:
-                    type: string
-                subcategories:
-                    items:
-                        $ref: '#/components/schemas/CategoryHierarchy'
-                    type: array
-                url:
-                    type: string
-                isRelatedCategory:
-                    type: boolean
-            required:
-                - breadcrumbData
-                - canonicalURL
-                - categoryWheelType
-                - currentCategoryImage
-                - description
-                - fitmentRequired
-                - hreflangLinkData
-                - id
-                - image
-                - lastModified
-                - metaRobot
-                - name
-                - productListFormat
-                - seoDescription
-                - seoTitle
-                - seoCopyBlock
-                - subcategories
-                - url
-                - isRelatedCategory
-            type: object
-            additionalProperties: false
-        LanguageEnum:
-            enum:
-                - en
-                - fr_ca
-                - fr_CA
-                - en_ca
-                - en_CA
-                - fr
-            type: string
-        iNavCategory:
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-                url:
-                    type: string
-                searchLink:
-                    type: string
-                image:
-                    type: string
-                subcategories:
-                    items:
-                        $ref: '#/components/schemas/iNavCategory'
-                    type: array
-            required:
-                - id
-                - name
-                - url
-            type: object
-            additionalProperties: false
-        FedCategoriesResponse:
-            properties:
-                categories:
-                    items:
-                        $ref: '#/components/schemas/iNavCategory'
-                    type: array
-            required:
-                - categories
-            type: object
-            additionalProperties: false
-        Scope:
-            enum:
-                - MEGANAV
-                - SITEMAP
-                - ""
-            type: string
-        health:
-            type: object
-            properties:
-                name:
-                    type: string
-                    description: 'The name of the app'
-                    example: category_api_microservice
-                status:
-                    type: string
-                    description: 'the server status'
-                    example: OK
-                    enum:
-                        - OK
-                message:
-                    type: string
-                    description: 'a message of the server status'
-                    example: 'Service is up and running.'
-                build:
-                    type: string
-                    description: 'a build number of the application'
-                    example: 1.0.0
-                uptime:
-                    type: integer
-                    description: 'an uptime of the application in milliseconds'
-                    format: int64
-    securitySchemes: {}
+swagger: '2.0'
+# basePath: /
+# host: localhost:3001
 info:
-    title: '@cantire-corp/cds.category-experience-api'
-    version: 1.0.0
-    description: 'Category Experience API'
-    license:
-        name: ISC
-    contact:
-        name: 'CDS Team'
-openapi: 3.0.0
+  version: 1.0.0
+  title: cds.api-authorization
+  description: >
+    Each call **MAY** require authentication and/or be protected with CSRF
+    protection.
+
+
+    **Authentication**
+
+    Each request to an endpoint that requires authentication should contain:
+
+    * `Authorization` header with JWT token from Gigya with Beared schema, e.g.
+    `Authorization: Bearer <JWT_token>`;
+
+    * cookie `Access-Token` with CDS JWT token that should be returned to a
+    client in a response to `/signin/access/token` call
+
+
+    Both tokens have to be valid, not expired and be issued to the same user.
+
+    Also, depends on CDS token issue time, the user could have `AUTHORIZED` or
+    `REMEMBER_ME` role.
+
+    If one or both token missed - user's role considered as `ANONYMOUS`.
+
+    If one of the tokens is expired or malformed - the appropriate error message
+    will be returned.
+
+
+    Possible error codes:
+      | errCode | errors | description |
+      |---|---|---|
+      | "00033" | N/A | Gigya token expired |
+      | "00034" | N/A | Gigya token malformed |
+      | "00035" | N/A | Gigya token missed |
+
+    **Whether the endpoint required authentication or not and which role is
+    required will be specified in each endpoint description.**
+
+
+    **CSRF Protection**
+
+    For CSRF protection used [Double Submit
+    Cookie](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md#double-submit-cookie)
+    approach.
+
+    Each request that protected by CSRF token requires:
+
+    - cookie `XSRF-TOKEN` that contain CSRF token, previously issued by the
+    backend.
+
+    - a header `X-XSRF-TOKEN` that contains the same value as cookie
+
+
+    **The CSRF token will be returned by the backend in cookie `XSRF-TOKEN` on
+    any call that doesn't contain the cookie.**
+consumes:
+  - application/json
+produces:
+  - application/json
+definitions:
+  ErrorResponse:
+    type: object
+    properties:
+      x-request-id:
+        type: string
+        description: |
+          The identifier request
+      errOrigin:
+        type: string
+        description: |
+          The error origin identifier - code of the error origin
+      statusCode:
+        type: number
+        description: |
+          Corresponds HTTP Status code
+      error:
+        type: string
+        description: |
+          Corresponds to HTTP Status name
+      message:
+        type: string
+        description: |
+          Short human-friendly message description
+      errCode:
+        type: string
+        description: CDS error code
+      data:
+        type: object
+        description: |
+          Field where error metadata could be added, format depends on the error
+      errors:
+        type: array
+        items:
+          type: string
+        description: DSS error codes
+  SignInSuccessResponse:
+    type: object
+    properties:
+      email:
+        type: string
+      UID:
+        type: string
+      ecomId:
+        type: string
+        description: |
+          Hybris's id to identify user
+      userName:
+        type: string
+      languages:
+        type: string
+      token:
+        type: string
+      ssoToken:
+        type: string
+      ttl:
+        type: number
+      role:
+        type: string
+  AuthorizedSuccessResponse:
+    type: object
+    properties:
+      gigyaUID:
+        description: |
+          Gigya's id to identify user
+        type: string
+      ecomId:
+        description: |
+          Hybris's id to identify user
+        type: string
+      iat:
+        type: number
+      exp:
+        type: number
+      role:
+        description: |
+          User's role
+        type: string
+        enum:
+          - ANONYMOUS
+          - REMEMBER_ME
+          - AUTHORIZED
+  LinkAccountSuccessResponse:
+    type: object
+    properties:
+      isLinked:
+        description: |
+          result for account linking as boolean
+        type: boolean
+  status:
+    type: object
+    properties:
+      result:
+        description: |
+          Operation status
+        type: boolean
 paths:
-    '/api/v1/categories/{categoryId}':
-        get:
-            operationId: GetCategory
-            responses:
-                '200':
-                    description: Ok
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/iCategory'
-                            examples:
-                              'Example 1':
-                                  value: {id: DC0000004, name: 'Tools & Hardware', description: 'Whether you’re a weekend DIYer or a professional contractor, we have the quality tools and accessories you need to design, build and fix with confidence.', url: [{url: /fr/cat/outils-et-quincaillerie-DC0000004.html, hreflang: fr}, {url: /en/cat/tools-hardware-DC0000004.html, hreflang: en}, {url: /en/cat/tools-hardware-DC0000004.html, hreflang: x-default}], image: 'https://media-www.canadiantire.ca/product/automotive/auto-maintenance/auto-shop-equipment-supplies/0095006/certified-12v-inflator-b6652fd3-5f83-4dd4-9a8b-faf51d9a5e94.png', subcategories: [], breadcrumbList: [{label: 'Tools & Hardware', url: /en/cat/tools-hardware-DC0000004.html}], isFitmentRequired: false, noFollow: false, noIndex: false, productWheelType: null, defaultView: GRID, seoTitle: 'Tools & Hardware', seoCopy: "", seoDescription: 'Shop Canadian Tire online for quality power and hand tools, replacement parts, paint, garage storage and much more. Pick up in store at any of 500+ locations.', canonicalUrl: "", searchLink: '?q1=DC0000004;x1=ast-id-level-1;lang=en_CA'}
-                '400':
-                    description: 'Bad Request'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CdsError'
-                            examples:
-                                'Example 1':
-                                    value: {statusCode: 400, message: 'Could not retrieve data from Hybris.', errors: ['Base site Sample doesn''t exist'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
-                '500':
-                    description: 'Internal Server Error'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CdsError'
-                            examples:
-                                'Example 1':
-                                    value: {statusCode: 500, message: 'Could not retrieve data from Hybris.', errors: ['Category with code ''DD045445'' in CatalogVersion ''ctcCanadianTireProductCatalog.Staged'' not found!'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
-            description: 'Get the category tree for a provided identifier.'
-            security: []
-            parameters:
-                -
-                    description: 'a given base site ID'
-                    in: header
-                    name: baseSiteId
-                    required: true
-                    schema:
-                        type: string
-                    example: CTR
-                -
-                    description: 'a given category ID'
-                    in: path
-                    name: categoryId
-                    required: true
-                    schema:
-                        type: string
-                    example: DC0000004
-                -
-                    description: 'specification of language for results [en/en_ca/fr_ca allowed - en default]'
-                    in: query
-                    name: lang
-                    required: false
-                    schema:
-                        $ref: '#/components/schemas/LanguageEnum'
-                -
-                    description: 'Optional depth 1-5'
-                    in: query
-                    name: level
-                    required: false
-                    schema:
-                        format: double
-                        type: number
-    /api/v1/categories:
-        get:
-            operationId: GetCategories
-            responses:
-                '200':
-                    description: Ok
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/FedCategoriesResponse'
-                            examples:
-                                'Example 1':
-                                    value: { categories: [ { "name": "Tools & Hardware", "id": "DC0000004", "url": "/en/cat/tools-hardware-DC0000004.html", "image": "" }]}
-                '400':
-                    description: 'Bad Request'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CdsError'
-                            examples:
-                                'Example 1':
-                                    value: {statusCode: 400, message: 'Could not retrieve data from Hybris.', errors: ['Base site Sample doesn''t exist'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
-            description: 'Get the category tree for a provided identifier.'
-            security: []
-            parameters:
-                -
-                    description: 'a given base site ID'
-                    in: header
-                    name: baseSiteId
-                    required: true
-                    schema:
-                        type: string
-                    example: CTR
-                -
-                    description: 'Optional depth 1-5'
-                    in: query
-                    name: level
-                    required: false
-                    schema:
-                        format: double
-                        type: number
-                    example: 1
-                -
-                    description: 'language for results [en/en_ca/fr_ca allowed - en default]'
-                    in: query
-                    name: lang
-                    required: false
-                    schema:
-                        $ref: '#/components/schemas/LanguageEnum'
-                -
-                    in: query
-                    name: scope
-                    required: false
-                    schema:
-                        $ref: '#/components/schemas/Scope'
-    /health:
-        get:
-            tags:
-                - health
-            summary: 'The health status of the service'
-            responses:
-                '200':
-                    description: 'successful operation'
-                    content:
-                        '*/*':
-                            schema:
-                                $ref: '#/components/schemas/health'
-                '500':
-                    description: 'Internal Server Error'
-                    content: {}
-servers:
-    # Added by API Auto Mocking Plugin
-    - description: SwaggerHub API Auto Mocking
-      url: https://virtserver.swaggerhub.com/CantireCorp/cds.category-experience-api/1.0.0
-    -
-        url: /category
+  /signin/access/token:
+    post:
+      summary: Signin user via Gigya's JWT
+      description: |
+        Login a customer into system.
+      tags:
+        - Signin
+      parameters:
+        - name: Authorization
+          in: header
+          description: >
+            JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
+            <JWT_token>`
+          required: true
+          type: string
+        - in: header
+          name: service-client
+          required: false
+          type: string
+          description: the service-client banner (e.g. CTR)
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              rememberMe:
+                type: boolean
+      responses:
+        '200':
+          description: >
+            HTTP 200 Ok should be returned along with response body, in case of
+            valid credentials passed.
+          schema:
+            $ref: '#/definitions/SignInSuccessResponse'
+        '401':
+          description: |
+            Possible error codes:
+              |errCode | errors | description |
+              |---|---|---|
+              | "00033" | N/A | Gigya token expired |
+              | "00034" | N/A | Gigya token malformed |
+              | "00035" | N/A | Gigya token missed |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: |
+            In case if user is forbidden to access
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /signin/triangleId:
+    post:
+      summary: Signin user via CTFS access token
+      description: |
+        Login a ctfs customer into system.
+      tags:
+        - Signin
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+      responses:
+        '200':
+          description: >
+            HTTP 200 Ok should be returned along with response body, in case of
+            valid token passed.
+          schema:
+            $ref: '#/definitions/SignInSuccessResponse'
+        '400':
+          description: |
+            Possible error codes:
+              |errCode | errors | description |
+              |---|---|---|
+              | "00045" | N/A | CTFS token missed |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /signin/rba-tmx:
+    post:
+      summary: Signin the user with RBA using ThreatMetrix service
+      description: |
+        Login a customer into a system based on ThreatMetrix service.
+      tags:
+        - Signin
+      parameters:
+        - name: X-TMX-Session-ID
+          in: header
+          description: Session-ID obtained from TMX by client
+          required: true
+          type: string
+        - in: header
+          name: X-Forwarded-For
+          required: true
+          type: string
+          description: IP-address of client. Format [client, proxy1, proxy2]
+        - in: header
+          name: service-client
+          required: true
+          type: string
+          description: value of banner
+        - in: header
+          name: Ctc-Cds-X-Forwarded-For
+          description: IP-address of client. Format [client, proxy1, proxy2]
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              loginID:
+                type: string
+              password:
+                type: string
+              deviceID:
+                type: string
+                description: gigya device identificator
+              targetEnv:
+                type: string
+                description: Possible values "mobile", "browser"
+                enum:
+                  - mobile
+                  - browser
+                default: browser
+            required:
+              - loginID
+              - password
+              - deviceID
+      responses:
+        '200':
+          description: >
+            HTTP 200 response from Gigya REST API accounts login. Full list of
+            response properties can be found here|
+
+            https://developers.gigya.com/display/GD/accounts.login+REST#accounts.loginREST-ResponseData
+          schema:
+            type: object
+            properties:
+              apiVersion:
+                type: number
+              callId:
+                type: string
+              errorCode:
+                type: number
+              errorDetails:
+                type: string
+              errorMessage:
+                type: string
+              time:
+                type: string
+              UID:
+                type: string
+              isNewUser:
+                type: boolean
+              isActive:
+                type: boolean
+              isVerified:
+                type: boolean
+              regToken:
+                type: string
+              sessionInfo:
+                type: object
+                properties:
+                  sessionToken:
+                    type: string
+                  sessionSecret:
+                    type: string
+                  expires_in:
+                    type: string
+            example:
+              callId: ff775c0eeb744562b65e9c911a53d7b9
+              errorCode: 0
+              apiVersion: 2
+              statusCode: 200
+              statusReason: OK
+              time: '2022-12-29T15:38:14.547Z'
+              registeredTimestamp: 1650294011
+              UID: eefb10e2c9014f608fdec29a050cc3d5
+              UIDSignature: mpi7UB3+zn/wfFV1dAR7RjH0pZg=
+              signatureTimestamp: '1672328294'
+              created: '2022-04-18T15:00:07.862Z'
+              createdTimestamp: 1650294007
+              isActive: true
+              isRegistered: true
+              isVerified: true
+              lastLogin: '2022-12-29T15:38:14.510Z'
+              lastLoginTimestamp: 1672328294
+              lastUpdated: '2022-12-23T11:28:45.197Z'
+              lastUpdatedTimestamp: 1671794925197
+              loginProvider: site
+              oldestDataUpdated: '2022-04-18T15:00:07.862Z'
+              oldestDataUpdatedTimestamp: 1650294007862
+              profile:
+                firstName: example
+                lastName: example
+                country: CA
+                email: example@gmail.com
+              registered: '2022-04-18T15:00:11.676Z'
+              socialProviders: site
+              verified: '2022-04-18T15:00:42.277Z'
+              verifiedTimestamp: 1650294042277
+              newUser: false
+              sessionInfo:
+                cookieName: gac_4_IxnZThokDC2GKSUXZDzKFg
+                cookieValue: <TOKEN>
+        '400':
+          description: |
+            Possible error codes:
+              |errCode | errors | description |
+              |---|---|---|
+              | "00007" | N/A | required headers are missed |
+              | "00007" | N/A | API key for Gigya is missing in the config file |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errOrigin: ATN
+              statusCode: 400
+              error: Bad Request
+              message: Validation error(s)
+              errCode: '00007'
+              data: null
+              stack: 'Error: Validation error(s)'
+  /refresh/access/token:
+    post:
+      summary: Updates Access-Token with new payload.
+      description: |
+        Cookie `Access-Token` are mandatory for current endpoint.
+      tags:
+        - Token refresh
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              ecomId:
+                type: string
+                description: |
+                  Hybris's id to identify user
+                example: exampleID
+      responses:
+        '200':
+          description: >
+            In response new token, with updated payload and preserved `iat` and
+            `exp`, ttl of token,
+
+            and set-cookie header with this updated token.
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: updated token
+              ttl:
+                type: number
+                description: Time to live of token in milliseconds
+        '401':
+          description: |
+            If token expired, invalid or absent
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errOrigin: ATN
+              statusCode: 401
+              error: Unauthorized
+              message: CDS jwt malformed
+              errCode: '00001'
+              data: null
+              stack: 'Error: CDS jwt malformed'
+  /refresh/hybris/access/token:
+    get:
+      summary: Refresh Hybris access token.
+      tags:
+        - Token refresh
+      parameters:
+        - in: query
+          name: refreshToken
+          type: string
+          required: true
+          x-example: exampleToken
+          description: |
+            Hybris Refresh Token
+      responses:
+        '200':
+          description: >
+            In response new access token, refresh token, token type, expiration
+            time and scopes
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: access token
+              token_type:
+                type: string
+                description: token type
+              refresh_token:
+                type: string
+                description: refresh token
+              expires_in:
+                type: string
+                description: access token expiration time
+              scope:
+                type: string
+                description: scopes
+        '502':
+          description: |
+            If refresh token expired, invalid or absent
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /signout:
+    get:
+      summary: Logout a customer
+      description: >
+        Signout through quits DSS session.
+
+        The attempt to signout user which is not currently signed in should
+        result in error.
+      tags:
+        - Signout
+      responses:
+        '200':
+          description: |
+            There are no response parameters, service simply returns HTTP 200.
+        '401':
+          description: ''
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00021" | N/A | If Access-Token token don't exists in Cookie |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /invalidate/password-changed:
+    post:
+      summary: API endpoint for killing active sessions
+      description: |
+        The method should be called after changing a password.
+        **Required role AUTHORIZED**
+      tags:
+        - Token invalidation
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: >
+            JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
+            <JWT_token>`
+      responses:
+        '200':
+          description: |
+            Status 200 will be recieved after successful session invalidation
+        '400':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00007" | N/A | UID is undefined |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errOrigin: ATN
+              statusCode: 400
+              error: Bad Request
+              message: Validation error(s)
+              errCode: '00007'
+              stack: 'Error: Validation error(s)'
+        '401':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00034" | N/A | Token verification error |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00021" | N/A | If Authorization token don't exists in Headers or Access-Token token don't exists in Cookie |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /invalidate/password-updated:
+    post:
+      summary: API endpoint for killing active sessions
+      description: |
+        The method should be called after password was updated.
+      tags:
+        - Token invalidation
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              UID:
+                type: string
+                example: eefb10e2c9014f608fdec29a050cc3d6
+      responses:
+        '200':
+          description: Status 200 will be received after successful session invalidation
+        '400':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00007" | N/A | UID is undefined |
+              | "00008" | N/A | If body is empty |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errOrigin: ATN
+              statusCode: 400
+              error: Bad Request
+              message: Validation error(s)
+              errCode: '00007'
+              stack: 'Error: Validation error(s)'
+  /sso/check-cookie:
+    get:
+      summary: Check cookie if a user has already logged in.
+      description: >
+        For SSO (single sign-on) approach. When you sign in at one banner you
+        will be logged in at all banners.
+
+        Cookie `Access-Token` are mandatory for current endpoint.
+      tags:
+        - SSO
+      parameters:
+        - in: header
+          name: Cookie
+          required: true
+          type: string
+          description: Access-Token should be set to get user data from token
+        - in: query
+          name: refClient
+          type: string
+          required: true
+          x-example: ctr/web
+          description: |
+            Service client (e.g. ctr/web, lq/qam1)
+        - in: query
+          name: refPath
+          type: string
+          required: false
+          description: >
+            Referrer path to redirect (e.g.
+            en/sports-rec/camping/tents-shelters.html)
+        - in: query
+          name: cookiesEnabled
+          type: boolean
+          required: false
+          description: |
+            Is 3-rd party cookie is enabled
+      responses:
+        '302':
+          description: >
+            Redirects to the internal `/set-cookie` endpoint and set cookie to
+            the referrer domain
+        '401':
+          description: ''
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00021" | N/A | If Access-Token token don't exists in Cookie |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sso/set-cookie:
+    get:
+      summary: Set cookie to the refferer domain
+      description: |
+        Set cookie to the refferer domain.
+        This is the internal call so the cookie is not mandatory
+      tags:
+        - SSO
+      parameters:
+        - in: header
+          name: x-auth
+          type: string
+          required: true
+          x-example: Bearer <JWT Token>
+          description: |
+            SSO token that was created in /signin/access/token
+        - in: query
+          name: refClient
+          type: string
+          required: true
+          x-example: ctr/web
+          description: |
+            Service client (e.g. ctr/web, lq/qam1)
+        - in: query
+          name: serviceClient
+          type: string
+          required: true
+          x-example: ctr/web
+          description: |
+            Service client for CSRF token (e.g. ctr/web, lq/qam1)
+        - in: query
+          name: refPath
+          type: string
+          required: false
+          description: >
+            Referrer path to redirect (e.g.
+            en/sports-rec/camping/tents-shelters.html)
+        - in: query
+          name: cookiesEnabled
+          type: boolean
+          required: false
+          description: |
+            Is 3-rd party cookie is enabled
+      responses:
+        '302':
+          description: |
+            Redirects to the referrer url that was set like a query param
+        '401':
+          description: ''
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errOrigin: ATN
+              statusCode: 400
+              error: Bad Request
+              message: Validation error(s)
+              errCode: '00007'
+              stack: 'Error: Validation error(s)'
+        '403':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00021" | N/A | If Access-Token token don't exists in Cookie |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sso/3-party-cookie/enabled:
+    get:
+      summary: Check 3rd party cookies support
+      description: |
+        Check if 3rd party cookies enabled for client
+      tags:
+        - SSO
+      parameters:
+        - in: query
+          name: r
+          type: string
+          required: false
+          x-example: t
+          description: |
+            If call is redirected, r=t    
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/status'
+        '401':
+          description: ''
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: |
+            Possible error codes:
+              | errCode | errors | description |
+              |---|---|---|
+              | "00021" | N/A | If Access-Token token don't exists in Cookie |
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sso/signout:
+    get:
+      summary: Logout from all banners
+      description: >
+        For SSO (single sign-on) approach. Sign out (removes cookies
+        Access-Token, Role and gigya session token) from all banners.
+      tags:
+        - SSO
+      parameters:
+        - in: query
+          name: refClient
+          type: string
+          required: true
+          x-example: ctr/web
+          description: |
+            Service client (e.g. ctr/web, lq/qam1)
+        - in: query
+          name: serviceClient
+          type: string
+          required: true
+          x-example: ctr/web
+          description: |
+            Service client for CSRF token (e.g. ctr/web, lq/qam1)
+        - in: query
+          name: cookiesEnabled
+          type: boolean
+          required: false
+          description: |
+            Is 3-rd party cookie is enabled
+      responses:
+        '302':
+          description: |
+            Redirects to the referrer url
+  /gigya/social/link-account:
+    post:
+      summary: Link user's account
+      tags:
+        - Social
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: >
+            JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
+            <JWT_token>`
+      responses:
+        '200':
+          description: >
+            200 status code returns in case if Gigya and/or CDS token is missed
+            or they are both presents and valid
+          schema:
+            $ref: '#/definitions/LinkAccountSuccessResponse'
+        '401':
+          description: |
+            The user is not authenticated, e.g. token expired, invalid
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            errOrigin: ATN
+            statusCode: 401
+            error: Unauthorized
+            message: User not authorized
+            errCode: '00033'
+            data: ''
+            stack: 'Error: User not authorized'
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /CantireCorp/cds.api.authorization/1.0.0
+schemes:
+ - https
