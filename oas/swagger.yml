@@ -1,8 +1,6 @@
-swagger: '2.0'
-# basePath: /
-# host: localhost:3001
+openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.0.0-oas3
   title: cds.api-authorization
   description: >
     Each call **MAY** require authentication and/or be protected with CSRF
@@ -58,106 +56,6 @@ info:
 
     **The CSRF token will be returned by the backend in cookie `XSRF-TOKEN` on
     any call that doesn't contain the cookie.**
-consumes:
-  - application/json
-produces:
-  - application/json
-definitions:
-  ErrorResponse:
-    type: object
-    properties:
-      x-request-id:
-        type: string
-        description: |
-          The identifier request
-      errOrigin:
-        type: string
-        description: |
-          The error origin identifier - code of the error origin
-      statusCode:
-        type: number
-        description: |
-          Corresponds HTTP Status code
-      error:
-        type: string
-        description: |
-          Corresponds to HTTP Status name
-      message:
-        type: string
-        description: |
-          Short human-friendly message description
-      errCode:
-        type: string
-        description: CDS error code
-      data:
-        type: object
-        description: |
-          Field where error metadata could be added, format depends on the error
-      errors:
-        type: array
-        items:
-          type: string
-        description: DSS error codes
-  SignInSuccessResponse:
-    type: object
-    properties:
-      email:
-        type: string
-      UID:
-        type: string
-      ecomId:
-        type: string
-        description: |
-          Hybris's id to identify user
-      userName:
-        type: string
-      languages:
-        type: string
-      token:
-        type: string
-      ssoToken:
-        type: string
-      ttl:
-        type: number
-      role:
-        type: string
-  AuthorizedSuccessResponse:
-    type: object
-    properties:
-      gigyaUID:
-        description: |
-          Gigya's id to identify user
-        type: string
-      ecomId:
-        description: |
-          Hybris's id to identify user
-        type: string
-      iat:
-        type: number
-      exp:
-        type: number
-      role:
-        description: |
-          User's role
-        type: string
-        enum:
-          - ANONYMOUS
-          - REMEMBER_ME
-          - AUTHORIZED
-  LinkAccountSuccessResponse:
-    type: object
-    properties:
-      isLinked:
-        description: |
-          result for account linking as boolean
-        type: boolean
-  status:
-    type: object
-    properties:
-      result:
-        description: |
-          Operation status
-        type: boolean
 paths:
   /signin/access/token:
     post:
@@ -173,27 +71,32 @@ paths:
             JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
             <JWT_token>`
           required: true
-          type: string
+          schema:
+            type: string
         - in: header
           name: service-client
           required: false
-          type: string
           description: the service-client banner (e.g. CTR)
-        - in: body
-          name: body
-          required: true
           schema:
-            type: object
-            properties:
-              rememberMe:
-                type: boolean
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rememberMe:
+                  type: boolean
+        required: true
       responses:
         '200':
           description: >
             HTTP 200 Ok should be returned along with response body, in case of
             valid credentials passed.
-          schema:
-            $ref: '#/definitions/SignInSuccessResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInSuccessResponse'
         '401':
           description: |
             Possible error codes:
@@ -202,13 +105,17 @@ paths:
               | "00033" | N/A | Gigya token expired |
               | "00034" | N/A | Gigya token malformed |
               | "00035" | N/A | Gigya token missed |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: |
             In case if user is forbidden to access
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /signin/triangleId:
     post:
       summary: Signin user via CTFS access token
@@ -216,30 +123,34 @@ paths:
         Login a ctfs customer into system.
       tags:
         - Signin
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              token:
-                type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+        required: true
       responses:
         '200':
           description: >
             HTTP 200 Ok should be returned along with response body, in case of
             valid token passed.
-          schema:
-            $ref: '#/definitions/SignInSuccessResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInSuccessResponse'
         '400':
           description: |
             Possible error codes:
               |errCode | errors | description |
               |---|---|---|
               | "00045" | N/A | CTFS token missed |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /signin/rba-tmx:
     post:
       summary: Signin the user with RBA using ThreatMetrix service
@@ -252,46 +163,51 @@ paths:
           in: header
           description: Session-ID obtained from TMX by client
           required: true
-          type: string
+          schema:
+            type: string
         - in: header
           name: X-Forwarded-For
           required: true
-          type: string
           description: IP-address of client. Format [client, proxy1, proxy2]
+          schema:
+            type: string
         - in: header
           name: service-client
           required: true
-          type: string
           description: value of banner
+          schema:
+            type: string
         - in: header
           name: Ctc-Cds-X-Forwarded-For
           description: IP-address of client. Format [client, proxy1, proxy2]
           required: true
-          type: string
-        - in: body
-          name: body
-          required: true
           schema:
-            type: object
-            properties:
-              loginID:
-                type: string
-              password:
-                type: string
-              deviceID:
-                type: string
-                description: gigya device identificator
-              targetEnv:
-                type: string
-                description: Possible values "mobile", "browser"
-                enum:
-                  - mobile
-                  - browser
-                default: browser
-            required:
-              - loginID
-              - password
-              - deviceID
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                loginID:
+                  type: string
+                password:
+                  type: string
+                deviceID:
+                  type: string
+                  description: gigya device identificator
+                targetEnv:
+                  type: string
+                  description: Possible values "mobile", "browser"
+                  enum:
+                    - mobile
+                    - browser
+                  default: browser
+              required:
+                - loginID
+                - password
+                - deviceID
+        required: true
       responses:
         '200':
           description: >
@@ -299,76 +215,78 @@ paths:
             response properties can be found here|
 
             https://developers.gigya.com/display/GD/accounts.login+REST#accounts.loginREST-ResponseData
-          schema:
-            type: object
-            properties:
-              apiVersion:
-                type: number
-              callId:
-                type: string
-              errorCode:
-                type: number
-              errorDetails:
-                type: string
-              errorMessage:
-                type: string
-              time:
-                type: string
-              UID:
-                type: string
-              isNewUser:
-                type: boolean
-              isActive:
-                type: boolean
-              isVerified:
-                type: boolean
-              regToken:
-                type: string
-              sessionInfo:
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
-                  sessionToken:
+                  apiVersion:
+                    type: number
+                  callId:
                     type: string
-                  sessionSecret:
+                  errorCode:
+                    type: number
+                  errorDetails:
                     type: string
-                  expires_in:
+                  errorMessage:
                     type: string
-            example:
-              callId: ff775c0eeb744562b65e9c911a53d7b9
-              errorCode: 0
-              apiVersion: 2
-              statusCode: 200
-              statusReason: OK
-              time: '2022-12-29T15:38:14.547Z'
-              registeredTimestamp: 1650294011
-              UID: eefb10e2c9014f608fdec29a050cc3d5
-              UIDSignature: mpi7UB3+zn/wfFV1dAR7RjH0pZg=
-              signatureTimestamp: '1672328294'
-              created: '2022-04-18T15:00:07.862Z'
-              createdTimestamp: 1650294007
-              isActive: true
-              isRegistered: true
-              isVerified: true
-              lastLogin: '2022-12-29T15:38:14.510Z'
-              lastLoginTimestamp: 1672328294
-              lastUpdated: '2022-12-23T11:28:45.197Z'
-              lastUpdatedTimestamp: 1671794925197
-              loginProvider: site
-              oldestDataUpdated: '2022-04-18T15:00:07.862Z'
-              oldestDataUpdatedTimestamp: 1650294007862
-              profile:
-                firstName: example
-                lastName: example
-                country: CA
-                email: example@gmail.com
-              registered: '2022-04-18T15:00:11.676Z'
-              socialProviders: site
-              verified: '2022-04-18T15:00:42.277Z'
-              verifiedTimestamp: 1650294042277
-              newUser: false
-              sessionInfo:
-                cookieName: gac_4_IxnZThokDC2GKSUXZDzKFg
-                cookieValue: <TOKEN>
+                  time:
+                    type: string
+                  UID:
+                    type: string
+                  isNewUser:
+                    type: boolean
+                  isActive:
+                    type: boolean
+                  isVerified:
+                    type: boolean
+                  regToken:
+                    type: string
+                  sessionInfo:
+                    type: object
+                    properties:
+                      sessionToken:
+                        type: string
+                      sessionSecret:
+                        type: string
+                      expires_in:
+                        type: string
+                example:
+                  callId: ff775c0eeb744562b65e9c911a53d7b9
+                  errorCode: 0
+                  apiVersion: 2
+                  statusCode: 200
+                  statusReason: OK
+                  time: '2022-12-29T15:38:14.547Z'
+                  registeredTimestamp: 1650294011
+                  UID: eefb10e2c9014f608fdec29a050cc3d5
+                  UIDSignature: mpi7UB3+zn/wfFV1dAR7RjH0pZg=
+                  signatureTimestamp: '1672328294'
+                  created: '2022-04-18T15:00:07.862Z'
+                  createdTimestamp: 1650294007
+                  isActive: true
+                  isRegistered: true
+                  isVerified: true
+                  lastLogin: '2022-12-29T15:38:14.510Z'
+                  lastLoginTimestamp: 1672328294
+                  lastUpdated: '2022-12-23T11:28:45.197Z'
+                  lastUpdatedTimestamp: 1671794925197
+                  loginProvider: site
+                  oldestDataUpdated: '2022-04-18T15:00:07.862Z'
+                  oldestDataUpdatedTimestamp: 1650294007862
+                  profile:
+                    firstName: example
+                    lastName: example
+                    country: CA
+                    email: example@gmail.com
+                  registered: '2022-04-18T15:00:11.676Z'
+                  socialProviders: site
+                  verified: '2022-04-18T15:00:42.277Z'
+                  verifiedTimestamp: 1650294042277
+                  newUser: false
+                  sessionInfo:
+                    cookieName: gac_4_IxnZThokDC2GKSUXZDzKFg
+                    cookieValue: <TOKEN>
         '400':
           description: |
             Possible error codes:
@@ -376,17 +294,20 @@ paths:
               |---|---|---|
               | "00007" | N/A | required headers are missed |
               | "00007" | N/A | API key for Gigya is missing in the config file |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
+          content:
             application/json:
-              errOrigin: ATN
-              statusCode: 400
-              error: Bad Request
-              message: Validation error(s)
-              errCode: '00007'
-              data: null
-              stack: 'Error: Validation error(s)'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                response:
+                  value:
+                    errOrigin: ATN
+                    statusCode: 400
+                    error: Bad Request
+                    message: Validation error(s)
+                    errCode: '00007'
+                    data: null
+                    stack: 'Error: Validation error(s)'
   /refresh/access/token:
     post:
       summary: Updates Access-Token with new payload.
@@ -394,18 +315,18 @@ paths:
         Cookie `Access-Token` are mandatory for current endpoint.
       tags:
         - Token refresh
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              ecomId:
-                type: string
-                description: |
-                  Hybris's id to identify user
-                example: exampleID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ecomId:
+                  type: string
+                  description: |
+                    Hybris's id to identify user
+                  example: exampleID
+        required: true
       responses:
         '200':
           description: >
@@ -413,29 +334,34 @@ paths:
             `exp`, ttl of token,
 
             and set-cookie header with this updated token.
-          schema:
-            type: object
-            properties:
-              token:
-                type: string
-                description: updated token
-              ttl:
-                type: number
-                description: Time to live of token in milliseconds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: updated token
+                  ttl:
+                    type: number
+                    description: Time to live of token in milliseconds
         '401':
           description: |
             If token expired, invalid or absent
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
+          content:
             application/json:
-              errOrigin: ATN
-              statusCode: 401
-              error: Unauthorized
-              message: CDS jwt malformed
-              errCode: '00001'
-              data: null
-              stack: 'Error: CDS jwt malformed'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                response:
+                  value:
+                    errOrigin: ATN
+                    statusCode: 401
+                    error: Unauthorized
+                    message: CDS jwt malformed
+                    errCode: '00001'
+                    data: null
+                    stack: 'Error: CDS jwt malformed'
   /refresh/hybris/access/token:
     get:
       summary: Refresh Hybris access token.
@@ -444,39 +370,44 @@ paths:
       parameters:
         - in: query
           name: refreshToken
-          type: string
           required: true
-          x-example: exampleToken
           description: |
             Hybris Refresh Token
+          example: exampleToken
+          schema:
+            type: string
       responses:
         '200':
           description: >
             In response new access token, refresh token, token type, expiration
             time and scopes
-          schema:
-            type: object
-            properties:
-              access_token:
-                type: string
-                description: access token
-              token_type:
-                type: string
-                description: token type
-              refresh_token:
-                type: string
-                description: refresh token
-              expires_in:
-                type: string
-                description: access token expiration time
-              scope:
-                type: string
-                description: scopes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: access token
+                  token_type:
+                    type: string
+                    description: token type
+                  refresh_token:
+                    type: string
+                    description: refresh token
+                  expires_in:
+                    type: string
+                    description: access token expiration time
+                  scope:
+                    type: string
+                    description: scopes
         '502':
           description: |
             If refresh token expired, invalid or absent
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /signout:
     get:
       summary: Logout a customer
@@ -493,16 +424,20 @@ paths:
             There are no response parameters, service simply returns HTTP 200.
         '401':
           description: ''
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /invalidate/password-changed:
     post:
       summary: API endpoint for killing active sessions
@@ -515,10 +450,11 @@ paths:
         - in: header
           name: Authorization
           required: true
-          type: string
           description: >
             JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
             <JWT_token>`
+          schema:
+            type: string
       responses:
         '200':
           description: |
@@ -529,32 +465,39 @@ paths:
               | errCode | errors | description |
               |---|---|---|
               | "00007" | N/A | UID is undefined |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
+          content:
             application/json:
-              errOrigin: ATN
-              statusCode: 400
-              error: Bad Request
-              message: Validation error(s)
-              errCode: '00007'
-              stack: 'Error: Validation error(s)'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                response:
+                  value:
+                    errOrigin: ATN
+                    statusCode: 400
+                    error: Bad Request
+                    message: Validation error(s)
+                    errCode: '00007'
+                    stack: 'Error: Validation error(s)'
         '401':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00034" | N/A | Token verification error |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00021" | N/A | If Authorization token don't exists in Headers or Access-Token token don't exists in Cookie |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /invalidate/password-updated:
     post:
       summary: API endpoint for killing active sessions
@@ -562,16 +505,16 @@ paths:
         The method should be called after password was updated.
       tags:
         - Token invalidation
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              UID:
-                type: string
-                example: eefb10e2c9014f608fdec29a050cc3d6
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UID:
+                  type: string
+                  example: eefb10e2c9014f608fdec29a050cc3d6
+        required: true
       responses:
         '200':
           description: Status 200 will be received after successful session invalidation
@@ -582,16 +525,19 @@ paths:
               |---|---|---|
               | "00007" | N/A | UID is undefined |
               | "00008" | N/A | If body is empty |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
+          content:
             application/json:
-              errOrigin: ATN
-              statusCode: 400
-              error: Bad Request
-              message: Validation error(s)
-              errCode: '00007'
-              stack: 'Error: Validation error(s)'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                response:
+                  value:
+                    errOrigin: ATN
+                    statusCode: 400
+                    error: Bad Request
+                    message: Validation error(s)
+                    errCode: '00007'
+                    stack: 'Error: Validation error(s)'
   /sso/check-cookie:
     get:
       summary: Check cookie if a user has already logged in.
@@ -606,28 +552,32 @@ paths:
         - in: header
           name: Cookie
           required: true
-          type: string
           description: Access-Token should be set to get user data from token
+          schema:
+            type: string
         - in: query
           name: refClient
-          type: string
           required: true
-          x-example: ctr/web
           description: |
             Service client (e.g. ctr/web, lq/qam1)
+          example: ctr/web
+          schema:
+            type: string
         - in: query
           name: refPath
-          type: string
           required: false
           description: >
             Referrer path to redirect (e.g.
             en/sports-rec/camping/tents-shelters.html)
+          schema:
+            type: string
         - in: query
           name: cookiesEnabled
-          type: boolean
           required: false
           description: |
             Is 3-rd party cookie is enabled
+          schema:
+            type: boolean
       responses:
         '302':
           description: >
@@ -635,16 +585,20 @@ paths:
             the referrer domain
         '401':
           description: ''
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /sso/set-cookie:
     get:
       summary: Set cookie to the refferer domain
@@ -656,62 +610,72 @@ paths:
       parameters:
         - in: header
           name: x-auth
-          type: string
           required: true
-          x-example: Bearer <JWT Token>
           description: |
             SSO token that was created in /signin/access/token
+          example: Bearer <JWT Token>
+          schema:
+            type: string
         - in: query
           name: refClient
-          type: string
           required: true
-          x-example: ctr/web
           description: |
             Service client (e.g. ctr/web, lq/qam1)
+          example: ctr/web
+          schema:
+            type: string
         - in: query
           name: serviceClient
-          type: string
           required: true
-          x-example: ctr/web
           description: |
             Service client for CSRF token (e.g. ctr/web, lq/qam1)
+          example: ctr/web
+          schema:
+            type: string
         - in: query
           name: refPath
-          type: string
           required: false
           description: >
             Referrer path to redirect (e.g.
             en/sports-rec/camping/tents-shelters.html)
+          schema:
+            type: string
         - in: query
           name: cookiesEnabled
-          type: boolean
           required: false
           description: |
             Is 3-rd party cookie is enabled
+          schema:
+            type: boolean
       responses:
         '302':
           description: |
             Redirects to the referrer url that was set like a query param
         '401':
           description: ''
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
+          content:
             application/json:
-              errOrigin: ATN
-              statusCode: 400
-              error: Bad Request
-              message: Validation error(s)
-              errCode: '00007'
-              stack: 'Error: Validation error(s)'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                response:
+                  value:
+                    errOrigin: ATN
+                    statusCode: 400
+                    error: Bad Request
+                    message: Validation error(s)
+                    errCode: '00007'
+                    stack: 'Error: Validation error(s)'
         '403':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /sso/3-party-cookie/enabled:
     get:
       summary: Check 3rd party cookies support
@@ -722,28 +686,35 @@ paths:
       parameters:
         - in: query
           name: r
-          type: string
           required: false
-          x-example: t
           description: |
             If call is redirected, r=t    
+          example: t
+          schema:
+            type: string
       responses:
         '200':
           description: ''
-          schema:
-            $ref: '#/definitions/status'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/status'
         '401':
           description: ''
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: |
             Possible error codes:
               | errCode | errors | description |
               |---|---|---|
               | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          schema:
-            $ref: '#/definitions/ErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /sso/signout:
     get:
       summary: Logout from all banners
@@ -755,24 +726,27 @@ paths:
       parameters:
         - in: query
           name: refClient
-          type: string
           required: true
-          x-example: ctr/web
           description: |
             Service client (e.g. ctr/web, lq/qam1)
+          example: ctr/web
+          schema:
+            type: string
         - in: query
           name: serviceClient
-          type: string
           required: true
-          x-example: ctr/web
           description: |
             Service client for CSRF token (e.g. ctr/web, lq/qam1)
+          example: ctr/web
+          schema:
+            type: string
         - in: query
           name: cookiesEnabled
-          type: boolean
           required: false
           description: |
             Is 3-rd party cookie is enabled
+          schema:
+            type: boolean
       responses:
         '302':
           description: |
@@ -786,32 +760,152 @@ paths:
         - in: header
           name: Authorization
           required: true
-          type: string
           description: >
             JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer
             <JWT_token>`
+          schema:
+            type: string
       responses:
         '200':
           description: >
             200 status code returns in case if Gigya and/or CDS token is missed
             or they are both presents and valid
-          schema:
-            $ref: '#/definitions/LinkAccountSuccessResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkAccountSuccessResponse'
         '401':
           description: |
             The user is not authenticated, e.g. token expired, invalid
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-          examples:
-            errOrigin: ATN
-            statusCode: 401
-            error: Unauthorized
-            message: User not authorized
-            errCode: '00033'
-            data: ''
-            stack: 'Error: User not authorized'
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /CantireCorp/cds.api.authorization/1.0.0
-schemes:
- - https
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            errOrigin:
+              examples:
+                response:
+                  value: ATN
+            statusCode:
+              examples:
+                response:
+                  value: 401
+            error:
+              examples:
+                response:
+                  value: Unauthorized
+            message:
+              examples:
+                response:
+                  value: User not authorized
+            errCode:
+              examples:
+                response:
+                  value: '00033'
+            data:
+              examples:
+                response:
+                  value: ''
+            stack:
+              examples:
+                response:
+                  value: 'Error: User not authorized'
+servers:
+  - url: https://virtserver.swaggerhub.com/CantireCorp/cds.api.authorization/1.0.0
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        x-request-id:
+          type: string
+          description: |
+            The identifier request
+        errOrigin:
+          type: string
+          description: |
+            The error origin identifier - code of the error origin
+        statusCode:
+          type: number
+          description: |
+            Corresponds HTTP Status code
+        error:
+          type: string
+          description: |
+            Corresponds to HTTP Status name
+        message:
+          type: string
+          description: |
+            Short human-friendly message description
+        errCode:
+          type: string
+          description: CDS error code
+        data:
+          type: object
+          description: >
+            Field where error metadata could be added, format depends on the
+            error
+        errors:
+          type: array
+          items:
+            type: string
+          description: DSS error codes
+    SignInSuccessResponse:
+      type: object
+      properties:
+        email:
+          type: string
+        UID:
+          type: string
+        ecomId:
+          type: string
+          description: |
+            Hybris's id to identify user
+        userName:
+          type: string
+        languages:
+          type: string
+        token:
+          type: string
+        ssoToken:
+          type: string
+        ttl:
+          type: number
+        role:
+          type: string
+    AuthorizedSuccessResponse:
+      type: object
+      properties:
+        gigyaUID:
+          description: |
+            Gigya's id to identify user
+          type: string
+        ecomId:
+          description: |
+            Hybris's id to identify user
+          type: string
+        iat:
+          type: number
+        exp:
+          type: number
+        role:
+          description: |
+            User's role
+          type: string
+          enum:
+            - ANONYMOUS
+            - REMEMBER_ME
+            - AUTHORIZED
+    LinkAccountSuccessResponse:
+      type: object
+      properties:
+        isLinked:
+          description: |
+            result for account linking as boolean
+          type: boolean
+    status:
+      type: object
+      properties:
+        result:
+          description: |
+            Operation status
+          type: boolean
