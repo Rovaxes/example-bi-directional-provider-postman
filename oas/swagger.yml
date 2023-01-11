@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0-oas3
+  version: 1.0.0
   title: cds.api-authorization
   description: >
     Each call **MAY** require authentication and/or be protected with CSRF
