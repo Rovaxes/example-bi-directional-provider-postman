@@ -1,13 +1,33 @@
 # Dredd Tests
-
-## Pass: GET (200) /api/v1/categories/DC0000004
-
-## Pass: GET (400) /api/v1/categories/DC0000004
-
-## Pass: GET (500) /api/v1/categories/DC0000004
-
-## Pass: GET (200) /api/v1/categories?level=1
-
-## Pass: GET (400) /api/v1/categories?level=1
-
-## Pass: GET (200) /health
+## Pass: POST (200) /signin/access/token
+## Pass: POST (401) /signin/access/token
+## Skip: POST (403) /signin/access/token
+## Pass: POST (200) /signin/triangleId
+## Skip: POST (400) /signin/triangleId
+## Pass: POST (200) /signin/rba-tmx
+## Pass: POST (400) /signin/rba-tmx
+## Pass: POST (200) /refresh/access/token
+## Pass: POST (401) /refresh/access/token
+## Pass: GET (200) /refresh/hybris/access/token?refreshToken=exampleToken
+## Skip: GET (502) /refresh/hybris/access/token?refreshToken=exampleToken
+## Pass: GET (200) /signout
+## Pass: GET (401) /signout
+## Skip: GET (403) /signout
+## Pass: POST (200) /invalidate/password-changed
+## Pass: POST (400) /invalidate/password-changed
+## Skip: POST (401) /invalidate/password-changed
+## Skip: POST (403) /invalidate/password-changed
+## Pass: POST (200) /invalidate/password-updated
+## Pass: POST (400) /invalidate/password-updated
+## Pass: GET (302) /sso/check-cookie?refClient=ctr%2Fweb
+## Pass: GET (401) /sso/check-cookie?refClient=ctr%2Fweb
+## Skip: GET (403) /sso/check-cookie?refClient=ctr%2Fweb
+## Pass: GET (302) /sso/set-cookie?refClient=ctr%2Fweb&serviceClient=ctr%2Fweb
+## Pass: GET (401) /sso/set-cookie?refClient=ctr%2Fweb&serviceClient=ctr%2Fweb
+## Skip: GET (403) /sso/set-cookie?refClient=ctr%2Fweb&serviceClient=ctr%2Fweb
+## Pass: GET (200) /sso/3-party-cookie/enabled?r=t
+## Pass: GET (401) /sso/3-party-cookie/enabled?r=t
+## Skip: GET (403) /sso/3-party-cookie/enabled?r=t
+## Pass: GET (302) /sso/signout?refClient=ctr%2Fweb&serviceClient=ctr%2Fweb
+## Pass: POST (200) /gigya/social/link-account
+## Pass: POST (401) /gigya/social/link-account
