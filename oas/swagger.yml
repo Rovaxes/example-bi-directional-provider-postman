@@ -1,882 +1,151 @@
-openapi: 3.0.1
-info:
-  title: Authorization API
-  description: |
-    Each call **MAY** require authentication and/or be protected with CSRF protection.
-
-    **Authentication**
-    Each request to an endpoint that requires authentication should contain:
-    * `Authorization` header with JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer <JWT_token>`;
-    * cookie `Access-Token` with CDS JWT token that should be returned to a client in a response to `/signin/access/token` call
-
-    Both tokens have to be valid, not expired and be issued to the same user.
-    Also, depends on CDS token issue time, the user could have `AUTHORIZED` or `REMEMBER_ME` role.
-    If one or both token missed - user's role considered as `ANONYMOUS`.
-    If one of the tokens is expired or malformed - the appropriate error message will be returned.
-
-    Possible error codes:
-      | errCode | errors | description |
-      |---|---|---|
-      | "00033" | N/A | Gigya token expired |
-      | "00034" | N/A | Gigya token malformed |
-      | "00035" | N/A | Gigya token missed |
-
-    **Whether the endpoint required authentication or not and which role is required will be specified in each endpoint description.**
-
-    **CSRF Protection**
-    For CSRF protection used [Double Submit Cookie](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md#double-submit-cookie) approach.
-    Each request that protected by CSRF token requires:
-    - cookie `XSRF-TOKEN` that contain CSRF token, previously issued by the backend.
-    - a header `X-XSRF-TOKEN` that contains the same value as cookie
-
-    **The CSRF token will be returned by the backend in cookie `XSRF-TOKEN` on any call that doesn't contain the cookie.**
-  version: 1.0.0
-servers:
-- url: //localhost:3001/
-paths:
-  /signin/access/token:
-    post:
-      operationId: PostSigninAccessToken
-      tags:
-      - Signin
-      summary: Signin user via Gigya's JWT
-      description: |
-        Login a customer into system.
-      parameters:
-      - name: Authorization
-        in: header
-        description: |
-          JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer <JWT_token>`
-        required: true
-        schema:
-          type: string
-      - name: service-client
-        in: header
-        description: the service-client banner (e.g. CTR)
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                rememberMe:
-                  type: boolean
-                  example: false
-        required: true
-      responses:
-        200:
-          description: |
-            HTTP 200 Ok should be returned along with response body, in case of valid credentials passed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SignInSuccessResponse'
-              example:
-                email: example@example.com
-                UID: exampleUID
-                token: exampleToken
-                ssoToken: exampleSSOToken
-        401:
-          description: |
-            Possible error codes:
-              |errCode | errors | description |
-              |---|---|---|
-              | "00033" | N/A | Gigya token expired |
-              | "00034" | N/A | Gigya token malformed |
-              | "00035" | N/A | Gigya token missed |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 401
-                error: 'N/A'
-                message: Gigya token missed
-                errCode: "00035"
-        403:
-          description: |
-            In case if user is forbidden to access
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      x-codegen-request-body-name: body
-  /signin/triangleId:
-    post:
-      operationId: PostSigninTriangleId
-      tags:
-      - Signin
-      summary: Signin user via CTFS access token
-      description: |
-        Login a ctfs customer into system.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                  example: token
-        required: true
-      responses:
-        200:
-          description: |
-            HTTP 200 Ok should be returned along with response body, in case of valid token passed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SignInSuccessResponse'
-              example:
-                email: example@example.com
-                UID: exampleUID
-                token: exampleToken
-                ssoToken: exampleSSOToken
-        400:
-          description: |
-            Possible error codes:
-              |errCode | errors | description |
-              |---|---|---|
-              | "00045" | N/A | CTFS token missed |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: 'N/A'
-                message: CTFS token missed
-                errCode: "00045"
-      x-codegen-request-body-name: body
-  /signin/rba-tmx:
-    post:
-      operationId: PostSigninRbaTmx
-      tags:
-      - Signin
-      summary: Signin the user with RBA using ThreatMetrix service
-      description: |
-        Login a customer into a system based on ThreatMetrix service.
-      parameters:
-      - name: X-TMX-Session-ID
-        in: header
-        description: Session-ID obtained from TMX by client
-        required: true
-        schema:
-          type: string
-      - name: X-Forwarded-For
-        in: header
-        description: IP-address of client. Format [client, proxy1, proxy2]
-        required: true
-        schema:
-          type: string
-      - name: service-client
-        in: header
-        description: value of banner
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-              - deviceID
-              - loginID
-              - password
-              type: object
-              properties:
-                loginID:
-                  type: string
-                  example: loginID
-                password:
-                  type: string
-                  example: password
-                deviceID:
-                  type: string
-                  description: gigya device identificator
-                  example: deviceID
-                targetEnv:
-                  type: string
-                  description: Possible values "mobile", "browser"
-                  default: browser
-                  enum:
-                  - mobile
-                  - browser
-        required: true
-      responses:
-        200:
-          description: |
-            HTTP 200 response from Gigya REST API accounts login. Full list of response properties can be found here|
-            https://developers.gigya.com/display/GD/accounts.login+REST#accounts.loginREST-ResponseData
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  apiVersion:
-                    type: number
-                  callId:
-                    type: string
-                  errorCode:
-                    type: number
-                  errorDetails:
-                    type: string
-                  errorMessage:
-                    type: string
-                  time:
-                    type: string
-                  UID:
-                    type: string
-                  isNewUser:
-                    type: boolean
-                  isActive:
-                    type: boolean
-                  isVerified:
-                    type: boolean
-                  regToken:
-                    type: string
-                  sessionInfo:
-                    type: object
-                    properties:
-                      sessionToken:
-                        type: string
-                      sessionSecret:
-                        type: string
-                      expires_in:
-                        type: string
-              example:
-                callId: ff775c0eeb744562b65e9c911a53d7b9
-                errorCode: 0
-                apiVersion: 2
-                time: 2022-12-29T15:38:14.547Z
-                UID: eefb10e2c9014f608fdec29a050cc3d5
-                isActive: true
-                isVerified: true
-        400:
-          description: |
-            Possible error codes:
-              |errCode | errors | description |
-              |---|---|---|
-              | "00007" | N/A | required headers are missed |
-              | "00007" | N/A | API key for Gigya is missing in the config file |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: Bad Request
-                message: Validation error(s)
-                errCode: "00007"
-      x-codegen-request-body-name: body
-  /refresh/access/token:
-    post:
-      operationId: PostRefreshAccessToken
-      tags:
-      - Token_refresh
-      summary: Updates Access-Token with new payload.
-      description: |
-        Cookie `Access-Token` are mandatory for current endpoint.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ecomId:
-                  type: string
-                  description: |
-                    Hybris's id to identify user
-                  example: exampleID
-        required: true
-      responses:
-        200:
-          description: |
-            In response new token, with updated payload and preserved `iat` and `exp`, ttl of token,
-            and set-cookie header with this updated token.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    description: updated token
-                  ttl:
-                    type: number
-                    description: Time to live of token in milliseconds
-        401:
-          description: |
-            If token expired, invalid or absent
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                errOrigin: ATN
-                statusCode: 401
-                error: Unauthorized
-                message: CDS jwt malformed
-                errCode: "00001"
-      x-codegen-request-body-name: body
-  /refresh/hybris/access/token:
-    get:
-      operationId: GetRefreshHybrisAccessToken
-      tags:
-      - Token_refresh
-      summary: Refresh Hybris access token.
-      parameters:
-      - name: refreshToken
-        in: query
-        description: |
-          Hybris Refresh Token
-        required: true
-        schema:
-          type: string
-        example: exampleToken
-      responses:
-        200:
-          description: |
-            In response new access token, refresh token, token type, expiration time and scopes
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                    description: access token
-                  token_type:
-                    type: string
-                    description: token type
-                  refresh_token:
-                    type: string
-                    description: refresh token
-                  expires_in:
-                    type: string
-                    description: access token expiration time
-                  scope:
-                    type: string
-                    description: scopes
-        502:
-          description: |
-            If refresh token expired, invalid or absent
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /signout:
-    get:
-      operationId: GetSignout
-      tags:
-      - Signout
-      summary: Logout a customer
-      description: |
-        Signout through quits DSS session.
-        The attempt to signout user which is not currently signed in should result in error.
-      responses:
-        200:
-          description: |
-            There are no response parameters, service simply returns HTTP 200.
-        401:
-          description: |
-            Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: Bad Request
-                message: Validation error(s)
-                errCode: "00007"
-        403:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /invalidate/password-changed:
-    post:
-      operationId: PostInvalidatePasswordChanged
-      tags:
-      - Token_invalidation
-      summary: API endpoint for killing active sessions
-      description: |
-        The method should be called after changing a password.
-        **Required role AUTHORIZED**
-      parameters:
-      - name: Authorization
-        in: header
-        description: |
-          JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer <JWT_token>`
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          description: |
-            Status 200 will be recieved after successful session invalidation
-        400:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00007" | N/A | UID is undefined |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: Bad Request
-                message: Validation error(s)
-                errCode: "00007"
-        401:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00034" | N/A | Token verification error |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: Bad Request
-                message: Validation error(s)
-                errCode: "00007"
-        403:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00021" | N/A | If Authorization token don't exists in Headers or Access-Token token don't exists in Cookie |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /invalidate/password-updated:
-    post:
-      operationId: PostInvalidatePasswordUpdated
-      tags:
-      - Token_invalidation
-      summary: API endpoint for killing active sessions
-      description: |
-        The method should be called after password was updated.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                UID:
-                  type: string
-                  example: eefb10e2c9014f608fdec29a050cc3d6
-              example:
-                UID: eefb10e2c9014f608fdec29a050cc3d6
-        required: true
-      responses:
-        200:
-          description: Status 200 will be received after successful session invalidation
-        400:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00007" | N/A | UID is undefined |
-              | "00008" | N/A | If body is empty |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 400
-                error: Bad Request
-                message: Validation error(s)
-                errCode: "00007"
-      x-codegen-request-body-name: body
-  /sso/check-cookie:
-    get:
-      operationId: GetSSOCheckCookie
-      tags:
-      - SSO
-      summary: Check cookie if a user has already logged in.
-      description: |
-        For SSO (single sign-on) approach. When you sign in at one banner you will be logged in at all banners.
-        Cookie `Access-Token` are mandatory for current endpoint.
-      parameters:
-      - name: Cookie
-        in: header
-        description: Access-Token should be set to get user data from token
-        required: true
-        schema:
-          type: string
-      - name: refClient
-        in: query
-        description: |
-          Service client (e.g. ctr/web, lq/qam1)
-        required: true
-        schema:
-          type: string
-        example: ctr/web
-      - name: refPath
-        in: query
-        description: |
-          Referrer path to redirect (e.g. en/sports-rec/camping/tents-shelters.html)
-        schema:
-          type: string
-      - name: cookiesEnabled
-        in: query
-        description: |
-          Is 3-rd party cookie is enabled
-        schema:
-          type: boolean
-      responses:
-        302:
-          description: |
-            Redirects to the internal `/set-cookie` endpoint and set cookie to the referrer domain
-        401:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 401
-                error: Unauthorized
-                message: Access token malformed
-                errCode: "00001"
-        403:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /sso/set-cookie:
-    get:
-      operationId: GetSSOSetCookie
-      tags:
-      - SSO
-      summary: Set cookie to the refferer domain
-      description: |
-        Set cookie to the refferer domain.
-        This is the internal call so the cookie is not mandatory
-      parameters:
-      - name: x-auth
-        in: header
-        description: |
-          SSO token that was created in /signin/access/token
-        required: true
-        schema:
-          type: string
-        example: Bearer <JWT Token>
-      - name: refClient
-        in: query
-        description: |
-          Service client (e.g. ctr/web, lq/qam1)
-        required: true
-        schema:
-          type: string
-        example: ctr/web
-      - name: serviceClient
-        in: query
-        description: |
-          Service client for CSRF token (e.g. ctr/web, lq/qam1)
-        required: true
-        schema:
-          type: string
-        example: ctr/web
-      - name: refPath
-        in: query
-        description: |
-          Referrer path to redirect (e.g. en/sports-rec/camping/tents-shelters.html)
-        schema:
-          type: string
-      - name: cookiesEnabled
-        in: query
-        description: |
-          Is 3-rd party cookie is enabled
-        schema:
-          type: boolean
-      responses:
-        302:
-          description: |
-            Redirects to the referrer url that was set like a query param
-        401:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 401
-                error: Unauthorized
-                message: Access token malformed
-                errCode: "00001"
-        403:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /sso/3-party-cookie/enabled:
-    get:
-      operationId: GetSSOCookieEnabled
-      tags:
-      - SSO
-      summary: Check 3rd party cookies support
-      description: |
-        Check if 3rd party cookies enabled for client
-      parameters:
-      - name: r
-        in: query
-        description: "If call is redirected, r=t    \n"
-        schema:
-          type: string
-        example: t
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/status'
-        401:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 401
-                error: Unauthorized
-                message: Access token malformed
-                errCode: "00001"
-        403:
-          description: |
-            Possible error codes:
-              | errCode | errors | description |
-              |---|---|---|
-              | "00021" | N/A | If Access-Token token don't exists in Cookie |
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /sso/signout:
-    get:
-      operationId: GetSSOSignout
-      tags:
-      - SSO
-      summary: Logout from all banners
-      description: |
-        For SSO (single sign-on) approach. Sign out (removes cookies Access-Token, Role and gigya session token) from all banners.
-      parameters:
-      - name: refClient
-        in: query
-        description: |
-          Service client (e.g. ctr/web, lq/qam1)
-        required: true
-        schema:
-          type: string
-        example: ctr/web
-      - name: serviceClient
-        in: query
-        description: |
-          Service client for CSRF token (e.g. ctr/web, lq/qam1)
-        required: true
-        schema:
-          type: string
-        example: ctr/web
-      - name: cookiesEnabled
-        in: query
-        description: |
-          Is 3-rd party cookie is enabled
-        schema:
-          type: boolean
-      responses:
-        302:
-          description: |
-            Redirects to the referrer url
-  /gigya/social/link-account:
-    post:
-      operationId: PostGigyaSocialLink
-      tags:
-      - Social
-      summary: Link user's account
-      parameters:
-      - name: Authorization
-        in: header
-        description: |
-          JWT token from Gigya with Beared schema, e.g. `Authorization: Bearer <JWT_token>`
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          description: |
-            200 status code returns in case if Gigya and/or CDS token is missed or they are both presents and valid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LinkAccountSuccessResponse'
-        401:
-          description: |
-            The user is not authenticated, e.g. token expired, invalid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                statusCode: 401
-                error: Unauthorized
-                message: User not authorized
-                errCode: "00033"
-  /costar/validate/hashtoken:
-    get:
-      operationId: GetCostarValidateHash
-      tags:
-      - Config
-      summary: Costar Share cart Hash token validation
-      description: |
-        Returns string valid/notvalid
-      parameters:
-      - name: x-signature
-        in: header
-        description: |
-          Encrypted signature value
-        required: true
-        schema:
-          type: string
-        example: signature
-      - name: api-key
-        in: header
-        description: API key
-        required: true
-        schema:
-          type: string
-        example: api-key
-      - name: timestamp
-        in: query
-        description: Encrypted timestamp value
-        required: true
-        schema:
-          type: string
-        example: timestamp
-      responses:
-        200:
-          description: |
-            HTTP 200 Ok should be returned along with response body, in case of valid signature.
 components:
+  examples: {}
+  headers: {}
+  parameters: {}
+  requestBodies: {}
+  responses: {}
   schemas:
     ErrorResponse:
-      type: object
       properties:
-        x-request-id:
+        requestId:
           type: string
-          description: |
-            The identifier request
         errOrigin:
           type: string
-          description: |
-            The error origin identifier - code of the error origin
         statusCode:
           type: number
-          description: |
-            Corresponds HTTP Status code
+          format: double
         error:
           type: string
-          description: |
-            Corresponds to HTTP Status name
         message:
           type: string
-          description: |
-            Short human-friendly message description
         errCode:
           type: string
-          description: CDS error code
         data:
+          additionalProperties: false
           type: object
-          properties: {}
-          description: |
-            Field where error metadata could be added, format depends on the error
-        errors:
-          type: array
-          description: DSS error codes
-          items:
-            type: string
-    SignInSuccessResponse:
+      type: object
+      additionalProperties: false
+    Lang:
+      enum:
+        - en
+        - en_ca
+        - en_CA
+        - fr_ca
+        - fr_CA
+        - fr
+      type: string
+    health:
       type: object
       properties:
-        email:
+        name:
           type: string
-        UID:
+          description: The name of the app
+          example: category_api_microservice
+        status:
           type: string
-        ecomId:
-          type: string
-          description: |
-            Hybris's id to identify user
-        userName:
-          type: string
-        languages:
-          type: string
-        token:
-          type: string
-        ssoToken:
-          type: string
-        ttl:
-          type: number
-        role:
-          type: string
-    AuthorizedSuccessResponse:
-      type: object
-      properties:
-        gigyaUID:
-          type: string
-          description: |
-            Gigya's id to identify user
-        ecomId:
-          type: string
-          description: |
-            Hybris's id to identify user
-        iat:
-          type: number
-        exp:
-          type: number
-        role:
-          type: string
-          description: |
-            User's role
+          description: the server status
+          example: OK
           enum:
-          - ANONYMOUS
-          - REMEMBER_ME
-          - AUTHORIZED
-    LinkAccountSuccessResponse:
-      type: object
-      properties:
-        isLinked:
-          type: boolean
-          description: |
-            result for account linking as boolean
-    status:
-      type: object
-      properties:
-        result:
-          type: boolean
-          description: |
-            Operation status
+            - OK
+        message:
+          type: string
+          description: a message of the server status
+          example: Service is up and running.
+        build:
+          type: string
+          description: a build number of the application
+          example: 1.0.0
+        uptime:
+          type: integer
+          description: an uptime of the application in milliseconds
+          format: int64
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: Access-Token
+      in: cookie
+info:
+  title: '@cantire-corp/cds.passbook-experience-api'
+  version: 1.11.2
+  description: Passbook Experience API
+  license:
+    name: ISC
+  contact:
+    name: CDS Team
+openapi: 3.0.0
+paths:
+  /api/v1/passbook:
+    get:
+      operationId: GetPassbook
+      responses:
+        '200':
+          description: Returns a PDF or PK file
+          content:
+            application/json:
+              schema:
+                type: string
+                format: byte
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                enum:
+                  - application/vnd.apple.pkpass;charset=UTF-8
+                nullable: false
+              required: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ErrorResponse'
+                required:
+                  - error
+                type: object
+              examples:
+                Example 1:
+                  value:
+                    error:
+                      data: {}
+                      errCode: '00000'
+                      errOrigin: CDS
+                      error: Bad Request
+                      message: Invalid parameters
+                      statusCode: 400
+                      requestId: '0'
+      description: Get passbook.
+      security:
+        - cookieAuth: []
+      parameters:
+        - description: base site id
+          in: header
+          name: baseSiteId
+          required: false
+          schema:
+            type: string
+          example: CTR
+        - description: language en fr
+          in: query
+          name: lang
+          required: false
+          schema:
+            $ref: '#/components/schemas/Lang'
+  /health:
+    get:
+      tags:
+        - health
+      summary: The health status of the service
+      responses:
+        '200':
+          description: successful operation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/health'
+        '500':
+          description: Internal Server Error
+          content: {}
+servers:
+  - url: /passbook
