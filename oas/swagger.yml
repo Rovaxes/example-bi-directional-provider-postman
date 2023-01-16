@@ -84,12 +84,12 @@ paths:
             application/json:
               schema:
                 type: string
-                format: byte
           headers:
             Content-Type:
               schema:
                 type: string
                 enum:
+                  - application/json
                   - application/vnd.apple.pkpass;charset=UTF-8
                 nullable: false
               required: true
