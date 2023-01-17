@@ -81,18 +81,12 @@ paths:
         '200':
           description: Returns a PDF or PK file
           content:
+            application/vnd.apple.pkpass;charset=UTF-8:
+              schema:
+                type: string
             application/json:
               schema:
                 type: string
-          headers:
-            Content-Type:
-              schema:
-                type: string
-                enum:
-                  - application/json
-                  - application/vnd.apple.pkpass;charset=UTF-8
-                nullable: false
-              required: true
         '400':
           description: Bad Request
           content:
