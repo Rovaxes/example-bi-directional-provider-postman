@@ -1,338 +1,342 @@
 components:
-  examples: {}
-  headers: {}
-  parameters: {}
-  requestBodies: {}
-  responses: {}
-  schemas:
-    IPrice:
-      properties:
-        minPrice:
-          type: number
-          format: double
-        maxPrice:
-          type: number
-          format: double
-        value:
-          type: number
-          format: double
-      type: object
-      additionalProperties: false
-    IPromo:
-      properties:
-        Price:
-          type: number
-          format: double
-        TotalPrice:
-          type: number
-          format: double
-        EndDate:
-          type: string
-          format: date-time
-        PriorPrice:
-          items:
-            type: number
-            format: double
-          type: array
-        Origin:
-          type: number
-          format: double
-        Message:
-          type: string
-      required:
-        - Price
-      type: object
-      additionalProperties: false
-    IIsOnline:
-      properties:
-        Active:
-          type: string
-        Exclusive:
-          type: string
-        Sellable:
-          type: string
-        Orderable:
-          type: string
-        StoreClearance:
-          type: string
-        SpecialBuy:
-          type: string
-      required:
-        - Active
-        - Exclusive
-        - Sellable
-        - Orderable
-        - StoreClearance
-        - SpecialBuy
-      type: object
-      additionalProperties: false
-    IRebate:
-      properties:
-        pdfLink:
-          type: string
-        Value:
-          type: number
-          format: double
-        StartDate:
-          type: string
-          format: date-time
-        EndDate:
-          type: string
-          format: date-time
-        Message:
-          type: string
-        TooltipMessage:
-          type: string
-        PriceAfterRebate:
-          type: number
-          format: double
-        TotalPriceAfterRebate:
-          type: number
-          format: double
-        QuantityPer:
-          type: number
-          format: double
-        IUMAP:
-          type: string
-        PercentDiscountValue:
-          type: number
-          format: double
-        IsPercentUsed:
-          type: string
-        Instant:
-          type: string
-      required:
-        - pdfLink
-        - StartDate
-        - EndDate
-        - PriceAfterRebate
-        - TotalPriceAfterRebate
-        - QuantityPer
-        - IUMAP
-        - IsPercentUsed
-        - Instant
-      type: object
-      additionalProperties: false
-    IPandaPriceBadge:
-      properties:
-        Badges:
-          items:
-            type: string
-          type: array
-        Banner:
-          type: string
-        Store:
-          type: string
-        SKU:
-          type: string
-        Price:
-          type: number
-          format: double
-        OriginalPrice:
-          $ref: '#/components/schemas/IPrice'
-        CurrentPrice:
-          $ref: '#/components/schemas/IPrice'
-        Quantity:
-          type: number
-          format: double
-        TotalEnviroFee:
-          type: number
-          format: double
-        EnviroFeeIncluded:
-          type: string
-        Promo:
-          $ref: '#/components/schemas/IPromo'
-        IsOnline:
-          $ref: '#/components/schemas/IIsOnline'
-        Rebate:
-          $ref: '#/components/schemas/IRebate'
-        SaveStory:
-          type: string
-        StoreClearance:
-          type: string
-      required:
-        - Badges
-        - OriginalPrice
-        - CurrentPrice
-      type: object
-      additionalProperties: false
-    ICDSError:
-      properties:
-        requestId:
-          type: number
-          format: double
-        errOrigin:
-          type: string
-        statusCode:
-          type: number
-          format: double
-        error:
-          type: string
-        message:
-          type: string
-        errCode:
-          type: string
-        data: {}
-        errors:
-          items:
-            type: string
-          type: array
-        isCdsError:
-          type: boolean
-      type: object
-      additionalProperties: false
-    ILowstockThreshold:
-      properties:
-        sku:
-          type: string
-        threshold:
-          type: number
-          format: double
-      required:
-        - sku
-        - threshold
-      type: object
-      additionalProperties: false
-    GetPandaBadgesRequest:
-      properties:
-        bannerId:
-          type: string
-        productCodes:
-          items:
-            type: string
-          type: array
-        skuCodes:
-          items:
-            type: string
-          type: array
-        storeId:
-          type: string
-        lang:
-          type: string
-        lowStockThresholds:
-          items:
-            $ref: '#/components/schemas/ILowstockThreshold'
-          type: array
-        hotDealThreshold:
-          type: number
-          format: double
-        limitedThreshold:
-          type: number
-          format: double
-        salesExpiredThreshold:
-          type: string
-        isKiosk:
-          type: boolean
-      required:
-        - bannerId
-        - storeId
-        - lang
-        - lowStockThresholds
-        - hotDealThreshold
-        - limitedThreshold
-      type: object
-      additionalProperties: false
-    health:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the app
-          example: category_api_microservice
-        status:
-          type: string
-          description: the server status
-          example: OK
-          enum:
-            - OK
-        message:
-          type: string
-          description: a message of the server status
-          example: Service is up and running.
-        build:
-          type: string
-          description: a build number of the application
-          example: 1.0.0
-        uptime:
-          type: integer
-          description: an uptime of the application in milliseconds
-          format: int64
-  securitySchemes: {}
+    examples: {}
+    headers: {}
+    parameters: {}
+    requestBodies: {}
+    responses: {}
+    schemas:
+        IPrice:
+            properties:
+                minPrice:
+                    type: number
+                    format: double
+                maxPrice:
+                    type: number
+                    format: double
+                value:
+                    type: number
+                    format: double
+            type: object
+            additionalProperties: false
+        IPromo:
+            properties:
+                Price:
+                    type: number
+                    format: double
+                TotalPrice:
+                    type: number
+                    format: double
+                EndDate:
+                    type: string
+                    format: date-time
+                PriorPrice:
+                    items:
+                        type: number
+                        format: double
+                    type: array
+                Origin:
+                    type: number
+                    format: double
+                Message:
+                    type: string
+            required:
+                - Price
+            type: object
+            additionalProperties: false
+        IIsOnline:
+            properties:
+                Active:
+                    type: string
+                Exclusive:
+                    type: string
+                Sellable:
+                    type: string
+                Orderable:
+                    type: string
+                StoreClearance:
+                    type: string
+                SpecialBuy:
+                    type: string
+            required:
+                - Active
+                - Exclusive
+                - Sellable
+                - Orderable
+                - StoreClearance
+                - SpecialBuy
+            type: object
+            additionalProperties: false
+        IRebate:
+            properties:
+                pdfLink:
+                    type: string
+                Value:
+                    type: number
+                    format: double
+                StartDate:
+                    type: string
+                    format: date-time
+                EndDate:
+                    type: string
+                    format: date-time
+                Message:
+                    type: string
+                TooltipMessage:
+                    type: string
+                PriceAfterRebate:
+                    type: number
+                    format: double
+                TotalPriceAfterRebate:
+                    type: number
+                    format: double
+                QuantityPer:
+                    type: number
+                    format: double
+                IUMAP:
+                    type: string
+                PercentDiscountValue:
+                    type: number
+                    format: double
+                IsPercentUsed:
+                    type: string
+                Instant:
+                    type: string
+            required:
+                - pdfLink
+                - StartDate
+                - EndDate
+                - PriceAfterRebate
+                - TotalPriceAfterRebate
+                - QuantityPer
+                - IUMAP
+                - IsPercentUsed
+                - Instant
+            type: object
+            additionalProperties: false
+        IPandaPriceBadge:
+            properties:
+                Badges:
+                    items:
+                        type: string
+                    type: array
+                Banner:
+                    type: string
+                Store:
+                    type: string
+                SKU:
+                    type: string
+                Price:
+                    type: number
+                    format: double
+                OriginalPrice:
+                    $ref: '#/components/schemas/IPrice'
+                CurrentPrice:
+                    $ref: '#/components/schemas/IPrice'
+                Quantity:
+                    type: number
+                    format: double
+                TotalEnviroFee:
+                    type: number
+                    format: double
+                EnviroFeeIncluded:
+                    type: string
+                Promo:
+                    $ref: '#/components/schemas/IPromo'
+                IsOnline:
+                    $ref: '#/components/schemas/IIsOnline'
+                Rebate:
+                    $ref: '#/components/schemas/IRebate'
+                SaveStory:
+                    type: string
+                StoreClearance:
+                    type: string
+            required:
+                - Badges
+                - OriginalPrice
+                - CurrentPrice
+            type: object
+            additionalProperties: false
+        ICDSError:
+            properties:
+                requestId:
+                    type: number
+                    format: double
+                errOrigin:
+                    type: string
+                statusCode:
+                    type: number
+                    format: double
+                error:
+                    type: string
+                message:
+                    type: string
+                errCode:
+                    type: string
+                data: {}
+                errors:
+                    items:
+                        type: string
+                    type: array
+                isCdsError:
+                    type: boolean
+            type: object
+            additionalProperties: false
+        ILowstockThreshold:
+            properties:
+                sku:
+                    type: string
+                threshold:
+                    type: number
+                    format: double
+            required:
+                - sku
+                - threshold
+            type: object
+            additionalProperties: false
+        GetPandaBadgesRequest:
+            properties:
+                bannerId:
+                    type: string
+                productCodes:
+                    items:
+                        type: string
+                    type: array
+                skuCodes:
+                    items:
+                        type: string
+                    type: array
+                storeId:
+                    type: string
+                lang:
+                    type: string
+                lowStockThresholds:
+                    items:
+                        $ref: '#/components/schemas/ILowstockThreshold'
+                    type: array
+                hotDealThreshold:
+                    type: number
+                    format: double
+                limitedThreshold:
+                    type: number
+                    format: double
+                salesExpiredThreshold:
+                    type: string
+                isKiosk:
+                    type: boolean
+            required:
+                - bannerId
+                - storeId
+                - lang
+                - lowStockThresholds
+                - hotDealThreshold
+                - limitedThreshold
+            type: object
+            additionalProperties: false
+        health:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: 'The name of the app'
+                    example: category_api_microservice
+                status:
+                    type: string
+                    description: 'the server status'
+                    example: OK
+                    enum:
+                        - OK
+                message:
+                    type: string
+                    description: 'a message of the server status'
+                    example: 'Service is up and running.'
+                build:
+                    type: string
+                    description: 'a build number of the application'
+                    example: 1.0.0
+                uptime:
+                    type: integer
+                    description: 'an uptime of the application in milliseconds'
+                    format: int64
+    securitySchemes: {}
 info:
-  title: '@cantire-corp/cds.badges.pandaprice-experience-api'
-  version: 1.7.10
-  description: Badge Panda Price Microservice
-  license:
-    name: ISC
-  contact:
-    name: CDS Team
+    title: '@cantire-corp/cds.badges.pandaprice-experience-api'
+    version: 1.0.0
+    description: 'Panda Price Badges API'
+    license:
+        name: ISC
+    contact:
+        name: 'CDS Team'
 openapi: 3.0.0
 paths:
-  /panda/priceBadges:
-    post:
-      operationId: GetPriceBadges
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema: {}
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ICDSError'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 400
-                    error: Bad Request
-                    errors:
-                      - Missing productCodes or skuCodes
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ICDSError'
-              examples:
-                Example 1:
-                  value:
-                    statusCode: 404
-                    message: Resource not found
-      description: Recieve Panda Badges and Prices for products via sku or product code
-      security: []
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetPandaBadgesRequest'
-            example:
-              bannerId: CTR
-              storeId: '337'
-              productCodes:
-                - 0789657P
-              lang: en
-              lowStockThresholds: []
-              hotDealThreshold: 0
-              limitedThreshold: 0
-  /health:
-    get:
-      tags:
-        - health
-      summary: The health status of the service
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/health'
-        '500':
-          description: Internal Server Error
-          content: {}
+    /panda/priceBadges:
+        post:
+            operationId: GetPriceBadges
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: '#/components/schemas/IPandaPriceBadge'
+                                type: array
+                            examples:
+                                'Example 1':
+                                    value: [{Badges: [], Banner: CTR, Store: '0337', Price: 9.99, OriginalPrice: {}, CurrentPrice: {value: 9.99, minPrice: 9.99}}]
+                '400':
+                    description: 'Bad Request'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ICDSError'
+                            examples:
+                                'Example 1':
+                                    value: {statusCode: 400, error: 'Bad Request', errors: ['Missing productCodes or skuCodes']}
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ICDSError'
+                            examples:
+                                'Example 1':
+                                    value: {statusCode: 404, message: 'Resource not found'}
+            description: 'Recieve Panda Badges and Prices for products via sku or product code'
+            security: []
+            parameters: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetPandaBadgesRequest'
+                        example:
+                            bannerId: CTR
+                            storeId: '337'
+                            productCodes:
+                                - 0789657P
+                            lang: en
+                            lowStockThresholds: []
+                            hotDealThreshold: 0
+                            limitedThreshold: 0
+    /health:
+        get:
+            tags:
+                - health
+            summary: 'The health status of the service'
+            responses:
+                '200':
+                    description: 'successful operation'
+                    content:
+                        'application/json; charset=utf-8':
+                            schema:
+                                $ref: '#/components/schemas/health'
+                '500':
+                    description: 'Internal Server Error'
+                    content: {}
 servers:
-  - url: /badges
+    # Added by API Auto Mocking Plugin
+    - description: SwaggerHub API Auto Mocking
+      url: https://virtserver.swaggerhub.com/CantireCorp/cds.badges-pandaprice-experience-api/1.0.0
+    -
+        url: /badges
