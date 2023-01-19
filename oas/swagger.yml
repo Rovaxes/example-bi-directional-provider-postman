@@ -622,7 +622,7 @@ components:
                     type: string
                 order:
                     type: string
-                videoImageThumbnailUrl:
+                videoImageThumbnailURL:
                     type: string
                 videoImageThumbnailDAMPath:
                     type: string
@@ -648,7 +648,7 @@ components:
                 - description
                 - damPath
                 - order
-                - videoImageThumbnailUrl
+                - videoImageThumbnailURL
                 - videoImageThumbnailDAMPath
                 - imageSpinIndicator
                 - isListingThumbnailImage
@@ -1401,7 +1401,7 @@ components:
     securitySchemes: {}
 info:
     title: '@cantire-corp/cds.profile.wishlist-experience-api'
-    version: 1.11.26
+    version: 1.11.22
     description: 'Profile Wishlist microservice'
     license:
         name: ISC
@@ -1418,7 +1418,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/iWishlist'
+                              $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1489,7 +1489,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/iWishlist'
+                              $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1570,82 +1570,6 @@ paths:
                             wishListEntries:
                                 -
                                     product: {code: '0543199'}
-        delete:
-            operationId: RemoveItemFromWishlist
-            responses:
-                '200':
-                    description: Ok
-                    content:
-                        application/json:
-                            schema:
-                                anyOf:
-                                    - {$ref: '#/components/schemas/iWishlist'}
-                                    - {}
-                                    - {$ref: '#/components/schemas/ErrorResponse'}
-                '400':
-                    description: 'Bad Request'
-                '401':
-                    description: Unauthorized
-            description: 'Remove item from wishlist.'
-            security: []
-            parameters:
-                -
-                    description: baseSiteId
-                    in: header
-                    name: baseSiteId
-                    required: true
-                    schema:
-                        type: string
-                    example: CTR
-                -
-                    description: 'id of the store for which the availability check is performed'
-                    in: query
-                    name: storeId
-                    required: false
-                    schema:
-                        type: string
-                    example: '452'
-                -
-                    description: 'language of the response'
-                    in: query
-                    name: lang
-                    required: false
-                    schema:
-                        $ref: '#/components/schemas/Lang'
-                -
-                    description: 'wishlist guid'
-                    in: query
-                    name: guid
-                    required: false
-                    schema:
-                        type: string
-                -
-                    in: query
-                    name: storeLat
-                    required: false
-                    schema:
-                        format: double
-                        type: number
-                -
-                    in: query
-                    name: storeLong
-                    required: false
-                    schema:
-                        format: double
-                        type: number
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            anyOf:
-                                -
-                                    $ref: '#/components/schemas/iRemoveFromWishlistEntries'
-                                -
-                                    items: {type: string}
-                                    type: array
-                        example:
-                            - '0543199'
     /profile/wishlist:
         get:
             operationId: GetWishlist
@@ -1655,7 +1579,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/iWishlist'
+                              $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1717,7 +1641,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/iWishlist'
+                              $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1778,7 +1702,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/iWishlist'
+                              $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1840,8 +1764,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                anyOf:
-                                    $ref: '#/components/schemas/IWishlistProductCodes'
+                              $ref: '#/components/schemas/IWishlistProductCodes'
                 '400':
                     description: 'Bad Request'
                 '401':
@@ -1877,7 +1800,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/IWishlistDetails'
+                              $ref: '#/components/schemas/IWishlistDetails'
                 '400':
                     description: 'Bad Request'
                 '401':
