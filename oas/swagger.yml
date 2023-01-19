@@ -5,231 +5,1372 @@ components:
     requestBodies: {}
     responses: {}
     schemas:
-        IPrice:
+        iImage:
             properties:
+                altText:
+                    type: string
+                mediaType:
+                    type: string
+                isListingThumbnailImage:
+                    type: string
+                url:
+                    type: string
+            required:
+                - altText
+                - mediaType
+                - isListingThumbnailImage
+                - url
+            type: object
+            additionalProperties: false
+        iBrand:
+            properties:
+                label:
+                    type: string
+                url:
+                    type: string
+                    nullable: true
+            required:
+                - label
+            type: object
+            additionalProperties: false
+        iFeeMessage:
+            properties:
+                feeDisclaimerTitle:
+                    type: string
+                feeDisclaimerMessage:
+                    type: string
+                feeTitle:
+                    type: string
+                type:
+                    type: string
+                value:
+                    anyOf:
+                        -
+                            type: number
+                            format: double
+                        -
+                            type: string
+            required:
+                - feeDisclaimerTitle
+                - feeDisclaimerMessage
+                - feeTitle
+                - type
+                - value
+            type: object
+            additionalProperties: false
+        iPrice:
+            properties:
+                value:
+                    type: number
+                    format: double
+                    nullable: true
+                maxPrice:
+                    type: number
+                    format: double
+                    nullable: true
                 minPrice:
                     type: number
                     format: double
-                maxPrice:
+                    nullable: true
+            type: object
+            additionalProperties: false
+        iPriceMessage:
+            properties:
+                label:
+                    type: string
+                tooltip:
+                    type: string
+            required:
+                - label
+                - tooltip
+            type: object
+            additionalProperties: false
+        iRebate:
+            properties:
+                iumapp:
+                    type: boolean
+                value:
+                    type: number
+                    format: double
+                percentage:
+                    type: boolean
+                message:
+                    type: string
+                tooltipMessage:
+                    type: string
+                greyCopyMsg:
+                    type: string
+                pdfLink:
+                    type: string
+                priceAfterRebate:
+                    type: number
+                    format: double
+            required:
+                - iumapp
+                - value
+                - percentage
+                - message
+                - tooltipMessage
+                - greyCopyMsg
+                - pdfLink
+                - priceAfterRebate
+            type: object
+            additionalProperties: false
+        iProductOption:
+            properties:
+                descriptor:
+                    type: string
+                display:
+                    type: string
+                value:
+                    type: string
+            required:
+                - descriptor
+                - display
+                - value
+            type: object
+            additionalProperties: false
+        iStorePickup:
+            properties:
+                etaEarliest:
+                    type: string
+            required:
+                - etaEarliest
+            type: object
+            additionalProperties: false
+        iShipToHome:
+            properties:
+                etaEarliest:
+                    type: string
+                etaLatest:
+                    type: string
+            required:
+                - etaEarliest
+                - etaLatest
+            type: object
+            additionalProperties: false
+        iCorporate:
+            properties:
+                Quantity:
+                    type: number
+                    format: double
+                MinOrderQty:
+                    type: number
+                    format: double
+                MinETA:
+                    type: string
+                MaxETA:
+                    type: string
+                orderableFromDC:
+                    type: boolean
+            required:
+                - Quantity
+                - MinOrderQty
+                - MinETA
+                - MaxETA
+                - orderableFromDC
+            type: object
+            additionalProperties: false
+        iItemAvailability:
+            properties:
+                Corporate:
+                    $ref: '#/components/schemas/iCorporate'
+                quantity:
+                    type: number
+                    format: double
+                storeShelfLocation:
+                    type: string
+                    nullable: true
+            required:
+                - Corporate
+                - quantity
+                - storeShelfLocation
+            type: object
+            additionalProperties: false
+        iProductFulfillment:
+            properties:
+                storePickUp:
+                    $ref: '#/components/schemas/iStorePickup'
+                shipToHome:
+                    $ref: '#/components/schemas/iShipToHome'
+                availability:
+                    $ref: '#/components/schemas/iItemAvailability'
+            required:
+                - storePickUp
+                - shipToHome
+                - availability
+            type: object
+            additionalProperties: false
+        iSpecification:
+            properties:
+                code:
+                    type: string
+                label:
+                    type: string
+                value:
+                    type: string
+            required:
+                - code
+                - label
+                - value
+            type: object
+            additionalProperties: false
+        iRoadRatingDetail:
+            properties:
+                roadRatedID:
+                    type: string
+                value:
+                    type: number
+                    format: double
+            required:
+                - roadRatedID
+                - value
+            type: object
+            additionalProperties: false
+        iRoadRating:
+            properties:
+                aggregateValue:
+                    type: number
+                    format: double
+                ratings:
+                    items:
+                        $ref: '#/components/schemas/iRoadRatingDetail'
+                    type: array
+            required:
+                - aggregateValue
+                - ratings
+            type: object
+            additionalProperties: false
+        iVehicleInformation:
+            properties:
+                baseVehicleId:
+                    type: string
+                body:
+                    type: string
+                make:
+                    type: string
+                model:
+                    type: string
+                options:
+                    type: string
+                type:
+                    type: string
+                year:
+                    type: string
+                engineConfigId:
+                    type: string
+            required:
+                - baseVehicleId
+                - body
+                - make
+                - model
+                - options
+                - type
+                - year
+            type: object
+            additionalProperties: false
+        iProductAvailableActions:
+            properties:
+                isAddToCartEnabled:
+                    type: boolean
+            required:
+                - isAddToCartEnabled
+            type: object
+            additionalProperties: false
+        SaleCut:
+            properties:
+                percentage:
                     type: number
                     format: double
                 value:
                     type: number
                     format: double
+            required:
+                - percentage
+                - value
             type: object
             additionalProperties: false
-        IPromo:
+        iWishlistEntry:
             properties:
-                Price:
-                    type: number
-                    format: double
-                TotalPrice:
-                    type: number
-                    format: double
-                EndDate:
-                    type: string
-                    format: date-time
-                PriorPrice:
+                images:
                     items:
-                        type: number
-                        format: double
+                        $ref: '#/components/schemas/iImage'
                     type: array
-                Origin:
-                    type: number
-                    format: double
-                Message:
+                name:
                     type: string
-            required:
-                - Price
-            type: object
-            additionalProperties: false
-        IIsOnline:
-            properties:
-                Active:
+                url:
                     type: string
-                Exclusive:
+                code:
                     type: string
-                Sellable:
-                    type: string
-                Orderable:
-                    type: string
-                StoreClearance:
-                    type: string
-                SpecialBuy:
-                    type: string
-            required:
-                - Active
-                - Exclusive
-                - Sellable
-                - Orderable
-                - StoreClearance
-                - SpecialBuy
-            type: object
-            additionalProperties: false
-        IRebate:
-            properties:
-                pdfLink:
-                    type: string
-                Value:
-                    type: number
-                    format: double
-                StartDate:
-                    type: string
-                    format: date-time
-                EndDate:
-                    type: string
-                    format: date-time
-                Message:
-                    type: string
-                TooltipMessage:
-                    type: string
-                PriceAfterRebate:
-                    type: number
-                    format: double
-                TotalPriceAfterRebate:
-                    type: number
-                    format: double
-                QuantityPer:
-                    type: number
-                    format: double
-                IUMAP:
-                    type: string
-                PercentDiscountValue:
-                    type: number
-                    format: double
-                IsPercentUsed:
-                    type: string
-                Instant:
-                    type: string
-            required:
-                - pdfLink
-                - StartDate
-                - EndDate
-                - PriceAfterRebate
-                - TotalPriceAfterRebate
-                - QuantityPer
-                - IUMAP
-                - IsPercentUsed
-                - Instant
-            type: object
-            additionalProperties: false
-        IPandaPriceBadge:
-            properties:
-                Badges:
+                merchCategories:
                     items:
                         type: string
                     type: array
-                Banner:
+                brand:
+                    $ref: '#/components/schemas/iBrand'
+                feeMessages:
+                    items:
+                        $ref: '#/components/schemas/iFeeMessage'
+                    type: array
+                currentPrice:
+                    $ref: '#/components/schemas/iPrice'
+                displayWasLabel:
+                    type: boolean
+                originalPrice:
+                    $ref: '#/components/schemas/iPrice'
+                priceMessage:
+                    items:
+                        $ref: '#/components/schemas/iPriceMessage'
+                    type: array
+                rebate:
+                    $ref: '#/components/schemas/iRebate'
+                badges:
+                    items:
+                        type: string
+                    type: array
+                offerDesc:
                     type: string
-                Store:
-                    type: string
-                SKU:
-                    type: string
-                Price:
+                rating:
                     type: number
                     format: double
-                OriginalPrice:
-                    $ref: '#/components/schemas/IPrice'
-                CurrentPrice:
-                    $ref: '#/components/schemas/IPrice'
-                Quantity:
+                ratingsCount:
                     type: number
                     format: double
-                TotalEnviroFee:
-                    type: number
-                    format: double
-                EnviroFeeIncluded:
+                options:
+                    items:
+                        $ref: '#/components/schemas/iProductOption'
+                    type: array
+                fulfillment:
+                    $ref: '#/components/schemas/iProductFulfillment'
+                productStatus:
                     type: string
-                Promo:
-                    $ref: '#/components/schemas/IPromo'
-                IsOnline:
-                    $ref: '#/components/schemas/IIsOnline'
-                Rebate:
-                    $ref: '#/components/schemas/IRebate'
-                SaveStory:
+                sellable:
+                    type: boolean
+                isSellableFinished:
+                    type: boolean
+                isSellableStarted:
+                    type: boolean
+                isEcommOnly:
+                    type: boolean
+                isBopisOnly:
+                    type: boolean
+                specifications:
+                    items:
+                        $ref: '#/components/schemas/iSpecification'
+                    type: array
+                roadRating:
+                    $ref: '#/components/schemas/iRoadRating'
+                productWheelType:
                     type: string
-                StoreClearance:
+                dwoEndDate:
                     type: string
+                    format: date-time
+                isBulk:
+                    type: boolean
+                baseProduct:
+                    type: string
+                vehicleInformation:
+                    $ref: '#/components/schemas/iVehicleInformation'
+                availableActions:
+                    $ref: '#/components/schemas/iProductAvailableActions'
+                primaryCategoryPath:
+                    type: string
+                saleCut:
+                    $ref: '#/components/schemas/SaleCut'
             required:
-                - Badges
-                - OriginalPrice
-                - CurrentPrice
+                - images
+                - name
+                - url
+                - code
+                - merchCategories
+                - brand
+                - currentPrice
+                - displayWasLabel
+                - rebate
+                - offerDesc
+                - rating
+                - ratingsCount
+                - options
+                - fulfillment
+                - productStatus
+                - sellable
+                - specifications
+                - productWheelType
             type: object
             additionalProperties: false
-        ICDSError:
+        iWishlist:
             properties:
-                requestId:
-                    type: number
-                    format: double
-                errOrigin:
+                products:
+                    items:
+                        $ref: '#/components/schemas/iWishlistEntry'
+                    type: array
+                guid:
                     type: string
-                statusCode:
+            required:
+                - products
+                - guid
+            type: object
+            additionalProperties: false
+        Error:
+            properties:
+                message:
+                    type: string
+                type:
+                    type: string
+                errorCode:
+                    type: string
+            required:
+                - message
+                - type
+            type: object
+            additionalProperties: false
+        ErrorResponse:
+            properties:
+                errors:
+                    items:
+                        $ref: '#/components/schemas/Error'
+                    type: array
+            required:
+                - errors
+            type: object
+            additionalProperties: false
+        Lang:
+            enum:
+                - en_CA
+                - fr_CA
+                - en
+                - fr
+            type: string
+        Stock:
+            properties:
+                isValueRounded:
+                    type: boolean
+                stockLevel:
                     type: number
                     format: double
-                error:
+                stockLevelStatus:
+                    type: string
+            required:
+                - isValueRounded
+                - stockLevel
+                - stockLevelStatus
+            type: object
+            additionalProperties: false
+        FutureStock:
+            properties:
+                date:
+                    type: string
+                    format: date-time
+                formattedDate:
+                    type: string
+                stock:
+                    $ref: '#/components/schemas/Stock'
+            required:
+                - date
+                - formattedDate
+                - stock
+            type: object
+            additionalProperties: false
+        CTCRebate:
+            properties:
+                endDate:
+                    type: string
+                greyCopyMessage:
+                    type: string
+                instant:
+                    type: string
+                isPercentUsed:
+                    type: boolean
+                iumap:
                     type: string
                 message:
                     type: string
-                errCode:
+                pdfLink:
                     type: string
-                data: {}
-                errors:
-                    items:
-                        type: string
-                    type: array
-                isCdsError:
+                percentDiscountValue:
+                    type: number
+                    format: double
+                postTaxRebateAmount:
+                    type: number
+                    format: double
+                postTaxRebateIncluded:
                     type: boolean
-            type: object
-            additionalProperties: false
-        ILowstockThreshold:
-            properties:
-                sku:
+                preTaxRebateAmount:
+                    type: number
+                    format: double
+                preTaxRebateIncluded:
+                    type: boolean
+                priceAfterRebate:
+                    type: number
+                    format: double
+                quantityPer:
+                    type: number
+                    format: double
+                startDate:
                     type: string
-                threshold:
+                tooltipHeader:
+                    type: string
+                tooltipMessage:
+                    type: string
+                value:
                     type: number
                     format: double
             required:
-                - sku
-                - threshold
+                - endDate
+                - greyCopyMessage
+                - instant
+                - isPercentUsed
+                - iumap
+                - message
+                - pdfLink
+                - percentDiscountValue
+                - postTaxRebateAmount
+                - postTaxRebateIncluded
+                - preTaxRebateAmount
+                - preTaxRebateIncluded
+                - priceAfterRebate
+                - quantityPer
+                - startDate
+                - tooltipHeader
+                - tooltipMessage
+                - value
             type: object
             additionalProperties: false
-        GetPandaBadgesRequest:
+        Price:
             properties:
-                bannerId:
+                ctcPriceType:
                     type: string
-                productCodes:
-                    items:
-                        type: string
-                    type: array
-                skuCodes:
-                    items:
-                        type: string
-                    type: array
-                storeId:
+                ctcRebate:
+                    $ref: '#/components/schemas/CTCRebate'
+                currencyIso:
                     type: string
-                lang:
+                formattedValue:
                     type: string
-                lowStockThresholds:
-                    items:
-                        $ref: '#/components/schemas/ILowstockThreshold'
-                    type: array
-                hotDealThreshold:
+                maxQuantity:
                     type: number
                     format: double
-                limitedThreshold:
+                minQuantity:
                     type: number
                     format: double
-                salesExpiredThreshold:
+                priceType:
                     type: string
-                isKiosk:
+                value:
+                    type: number
+                    format: double
+                currentUnitPrice:
+                    type: number
+                    format: double
+                originalPrice:
+                    type: number
+                    format: double
+                saveStory:
+                    type: string
+                promoMessage:
+                    type: string
+                baseEcoFees:
+                    type: number
+                    format: double
+                baseCoreCharges:
+                    type: number
+                    format: double
+                ecoFees:
+                    type: number
+                    format: double
+                totalEcoFees:
+                    type: number
+                    format: double
+            required:
+                - ctcPriceType
+                - ctcRebate
+                - currencyIso
+                - formattedValue
+                - maxQuantity
+                - minQuantity
+                - priceType
+                - value
+                - saveStory
+                - promoMessage
+            type: object
+            additionalProperties: false
+        ImageType:
+            enum:
+                - 0
+                - 1
+            type: number
+        Image:
+            properties:
+                imageType:
+                    $ref: '#/components/schemas/ImageType'
+                format:
+                    type: string
+                url:
+                    type: string
+                altText:
+                    type: string
+                angleOrCrop:
+                    type: string
+                galleryIndex:
+                    type: number
+                    format: double
+                code:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                damPath:
+                    type: string
+                order:
+                    type: string
+                videoImageThumbnailUrl:
+                    type: string
+                videoImageThumbnailDAMPath:
+                    type: string
+                imageSpinIndicator:
+                    type: boolean
+                isListingThumbnailImage:
+                    type: boolean
+                mediaType:
+                    type: string
+                damCreateDate:
+                    type: string
+                    format: date-time
+                isPrimary:
                     type: boolean
             required:
-                - bannerId
-                - storeId
-                - lang
-                - lowStockThresholds
-                - hotDealThreshold
-                - limitedThreshold
+                - imageType
+                - format
+                - url
+                - altText
+                - galleryIndex
+                - code
+                - name
+                - description
+                - damPath
+                - order
+                - videoImageThumbnailUrl
+                - videoImageThumbnailDAMPath
+                - imageSpinIndicator
+                - isListingThumbnailImage
+                - mediaType
+                - damCreateDate
+                - isPrimary
+            type: object
+            additionalProperties: false
+        Category:
+            properties:
+                code:
+                    type: string
+                name:
+                    type: string
+                url:
+                    type: string
+                image:
+                    $ref: '#/components/schemas/Image'
+                lowStockThreshold:
+                    type: number
+                    format: double
+            required:
+                - code
+                - name
+                - url
+                - image
+                - lowStockThreshold
+            type: object
+            additionalProperties: false
+        Currency:
+            properties:
+                active:
+                    type: boolean
+                isocode:
+                    type: string
+                name:
+                    type: string
+                symbol:
+                    type: string
+            required:
+                - active
+                - isocode
+                - name
+                - symbol
+            type: object
+            additionalProperties: false
+        Country:
+            properties:
+                isocode:
+                    type: string
+                name:
+                    type: string
+            required:
+                - isocode
+                - name
+            type: object
+            additionalProperties: false
+        Region:
+            properties:
+                countryIso:
+                    type: string
+                isocode:
+                    type: string
+                isocodeShort:
+                    type: string
+                name:
+                    type: string
+            required:
+                - countryIso
+                - isocode
+                - isocodeShort
+                - name
+            type: object
+            additionalProperties: false
+        CTCAddress:
+            properties:
+                cellphone:
+                    type: string
+                companyName:
+                    type: string
+                country:
+                    $ref: '#/components/schemas/Country'
+                defaultAddress:
+                    type: string
+                district:
+                    type: string
+                email:
+                    type: string
+                firstName:
+                    type: string
+                formattedAddress:
+                    type: string
+                id:
+                    type: string
+                lastName:
+                    type: string
+                line1:
+                    type: string
+                line2:
+                    type: string
+                phone:
+                    type: string
+                postalCode:
+                    type: string
+                region:
+                    $ref: '#/components/schemas/Region'
+                shippingAddress:
+                    type: string
+                title:
+                    type: string
+                titleCode:
+                    type: string
+                town:
+                    type: string
+                visibleInAddressBook:
+                    type: string
+            required:
+                - cellphone
+                - companyName
+                - country
+                - defaultAddress
+                - district
+                - email
+                - firstName
+                - formattedAddress
+                - id
+                - lastName
+                - line1
+                - line2
+                - phone
+                - postalCode
+                - region
+                - shippingAddress
+                - title
+                - titleCode
+                - town
+                - visibleInAddressBook
+            type: object
+            additionalProperties: false
+        Language:
+            properties:
+                active:
+                    type: string
+                isocode:
+                    type: string
+                name:
+                    type: string
+                nativeName:
+                    type: string
+            required:
+                - active
+                - isocode
+                - name
+                - nativeName
+            type: object
+            additionalProperties: false
+        User:
+            properties:
+                currency:
+                    $ref: '#/components/schemas/Currency'
+                customerId:
+                    type: string
+                deactivationDate:
+                    type: string
+                    format: date-time
+                defaultAddress:
+                    $ref: '#/components/schemas/CTCAddress'
+                displayUid:
+                    type: string
+                firstName:
+                    type: string
+                language:
+                    $ref: '#/components/schemas/Language'
+                lastName:
+                    type: string
+                name:
+                    type: string
+                title:
+                    type: string
+                titleCode:
+                    type: string
+                uid:
+                    type: string
+            required:
+                - currency
+                - customerId
+                - deactivationDate
+                - defaultAddress
+                - displayUid
+                - firstName
+                - language
+                - lastName
+                - name
+                - title
+                - titleCode
+                - uid
+            type: object
+            additionalProperties: false
+        Review:
+            properties:
+                id:
+                    type: string
+                headline:
+                    type: string
+                comment:
+                    type: string
+                rating:
+                    type: number
+                    format: double
+                date:
+                    type: string
+                    format: date-time
+                alias:
+                    type: string
+                principal:
+                    $ref: '#/components/schemas/User'
+            required:
+                - id
+                - headline
+                - comment
+                - rating
+                - date
+                - alias
+                - principal
+            type: object
+            additionalProperties: false
+        FeatureUnit:
+            properties:
+                name:
+                    type: string
+                symbol:
+                    type: string
+                unitType:
+                    type: string
+            required:
+                - name
+                - symbol
+                - unitType
+            type: object
+            additionalProperties: false
+        FeatureValue:
+            properties:
+                value:
+                    type: string
+            required:
+                - value
+            type: object
+            additionalProperties: false
+        Feature:
+            properties:
+                code:
+                    type: string
+                comparable:
+                    type: boolean
+                description:
+                    type: string
+                featureUnit:
+                    $ref: '#/components/schemas/FeatureUnit'
+                featureValues:
+                    items:
+                        $ref: '#/components/schemas/FeatureValue'
+                    type: array
+                name:
+                    type: string
+                range:
+                    type: boolean
+                type:
+                    type: string
+                visibility:
+                    type: boolean
+            required:
+                - code
+                - comparable
+                - featureUnit
+                - featureValues
+                - name
+                - range
+                - type
+            type: object
+            additionalProperties: false
+        Classification:
+            properties:
+                code:
+                    type: string
+                features:
+                    items:
+                        $ref: '#/components/schemas/Feature'
+                    type: array
+                name:
+                    type: string
+            required:
+                - code
+                - features
+                - name
+            type: object
+            additionalProperties: false
+        PromotionRestriction:
+            properties:
+                restrictionType:
+                    type: string
+                description:
+                    type: string
+            required:
+                - restrictionType
+                - description
+            type: object
+            additionalProperties: false
+        Promotion:
+            properties:
+                code:
+                    type: string
+                couldFireMessages:
+                    items:
+                        type: string
+                    type: array
+                description:
+                    type: string
+                enabled:
+                    type: boolean
+                endDate:
+                    type: string
+                firedMessages:
+                    type: string
+                priority:
+                    type: number
+                    format: double
+                productBanner:
+                    $ref: '#/components/schemas/Image'
+                promotionGroup:
+                    type: string
+                promotionType:
+                    type: string
+                restrictions:
+                    items:
+                        $ref: '#/components/schemas/PromotionRestriction'
+                    type: array
+                startDate:
+                    type: string
+                title:
+                    type: string
+            required:
+                - code
+                - couldFireMessages
+                - description
+                - enabled
+                - endDate
+                - firedMessages
+                - priority
+                - productBanner
+                - promotionGroup
+                - promotionType
+                - restrictions
+                - startDate
+                - title
+            type: object
+            additionalProperties: false
+        VariantOptionQualifier:
+            properties:
+                image:
+                    $ref: '#/components/schemas/Image'
+                name:
+                    type: string
+                qualifier:
+                    type: string
+                value:
+                    type: string
+            required:
+                - image
+                - name
+                - qualifier
+                - value
+            type: object
+            additionalProperties: false
+        CTCPrice:
+            properties:
+                ctcPriceType:
+                    type: string
+                isIncludeInPriceRange:
+                    type: boolean
+            required:
+                - ctcPriceType
+                - isIncludeInPriceRange
+            type: object
+            additionalProperties: false
+        VariantOption:
+            properties:
+                code:
+                    type: string
+                stock:
+                    $ref: '#/components/schemas/Stock'
+                url:
+                    type: string
+                priceData:
+                    $ref: '#/components/schemas/Price'
+                checkDigit:
+                    type: string
+                variantOptionQualifiers:
+                    items:
+                        $ref: '#/components/schemas/VariantOptionQualifier'
+                    type: array
+                specifications:
+                    items:
+                        $ref: '#/components/schemas/Classification'
+                    type: array
+                variantProductPrices:
+                    $ref: '#/components/schemas/CTCPrice'
+                isLimitedPDP:
+                    type: boolean
+            required:
+                - code
+                - stock
+                - url
+                - priceData
+                - checkDigit
+                - variantOptionQualifiers
+                - specifications
+                - variantProductPrices
+                - isLimitedPDP
+            type: object
+            additionalProperties: false
+        BaseOption:
+            properties:
+                variantType:
+                    type: string
+                options:
+                    $ref: '#/components/schemas/VariantOption'
+                selected:
+                    $ref: '#/components/schemas/VariantOption'
+            required:
+                - variantType
+                - options
+                - selected
+            type: object
+            additionalProperties: false
+        ProductReference:
+            properties:
+                preselected:
+                    type: boolean
+                referenceType:
+                    type: string
+                target:
+                    properties:
+                        url:
+                            type: string
+                        maxOrderQuantity:
+                            type: number
+                            format: double
+                        code:
+                            type: string
+                        description:
+                            type: string
+                        name:
+                            type: string
+                        ctcPrice:
+                            properties:
+                                currentUnitPrice:
+                                    type: number
+                                    format: double
+                                originalPrice:
+                                    type: number
+                                    format: double
+                            type: object
+                    type: object
+            required:
+                - preselected
+            type: object
+            additionalProperties: false
+        VariantCategory:
+            properties:
+                name:
+                    type: string
+                hasImage:
+                    type: boolean
+                priority:
+                    type: number
+                    format: double
+                code:
+                    type: string
+            required:
+                - name
+                - hasImage
+                - priority
+                - code
+            type: object
+            additionalProperties: false
+        VariantValueCategory:
+            properties:
+                name:
+                    type: string
+                sequence:
+                    type: number
+                    format: double
+                superCategories:
+                    items:
+                        $ref: '#/components/schemas/VariantCategory'
+                    type: array
+                displayName:
+                    type: string
+            required:
+                - name
+                - sequence
+                - superCategories
+                - displayName
+            type: object
+            additionalProperties: false
+        VariantMatrixElement:
+            properties:
+                variantValueCategory:
+                    $ref: '#/components/schemas/VariantValueCategory'
+                parentVariantCategory:
+                    $ref: '#/components/schemas/VariantCategory'
+                variantOption:
+                    $ref: '#/components/schemas/VariantOption'
+                elements:
+                    items:
+                        $ref: '#/components/schemas/VariantMatrixElement'
+                    type: array
+                isLeaf:
+                    type: boolean
+                images:
+                    items:
+                        $ref: '#/components/schemas/Image'
+                    type: array
+                displayName:
+                    type: string
+            required:
+                - variantValueCategory
+                - parentVariantCategory
+                - variantOption
+                - elements
+                - isLeaf
+                - images
+                - displayName
+            type: object
+            additionalProperties: false
+        PriceRange:
+            properties:
+                maxPrice:
+                    $ref: '#/components/schemas/Price'
+                minPrice:
+                    $ref: '#/components/schemas/Price'
+            required:
+                - maxPrice
+                - minPrice
+            type: object
+            additionalProperties: false
+        ProductBase:
+            properties:
+                code:
+                    type: string
+                name:
+                    type: string
+                url:
+                    type: string
+                description:
+                    type: string
+                purchasable:
+                    type: boolean
+                stock:
+                    $ref: '#/components/schemas/Stock'
+                futureStocks:
+                    items:
+                        $ref: '#/components/schemas/FutureStock'
+                    type: array
+                availableForPickup:
+                    type: boolean
+                averageRating:
+                    type: number
+                    format: double
+                numberOfReviews:
+                    type: number
+                    format: double
+                summary:
+                    type: string
+                manufacturer:
+                    type: string
+                variantType:
+                    type: string
+                price:
+                    $ref: '#/components/schemas/Price'
+                baseProduct:
+                    type: string
+                images:
+                    items:
+                        $ref: '#/components/schemas/Image'
+                    type: array
+                categories:
+                    items:
+                        $ref: '#/components/schemas/Category'
+                    type: array
+                reviews:
+                    items:
+                        $ref: '#/components/schemas/Review'
+                    type: array
+                classifications:
+                    items:
+                        $ref: '#/components/schemas/Classification'
+                    type: array
+                potentialPromotions:
+                    items:
+                        $ref: '#/components/schemas/Promotion'
+                    type: array
+                variantOptions:
+                    items:
+                        $ref: '#/components/schemas/VariantOption'
+                    type: array
+                baseOptions:
+                    items:
+                        $ref: '#/components/schemas/BaseOption'
+                    type: array
+                volumePricesFlag:
+                    type: boolean
+                volumePrices:
+                    items:
+                        $ref: '#/components/schemas/Price'
+                    type: array
+                productReferences:
+                    items:
+                        $ref: '#/components/schemas/ProductReference'
+                    type: array
+                variantMatrix:
+                    items:
+                        $ref: '#/components/schemas/VariantMatrixElement'
+                    type: array
+                priceRange:
+                    items:
+                        $ref: '#/components/schemas/PriceRange'
+                    type: array
+                multidimensional:
+                    type: boolean
+                configuratorType:
+                    type: string
+                configurable:
+                    type: boolean
+                tags:
+                    items:
+                        type: string
+                    type: array
+            required:
+                - code
+            type: object
+            additionalProperties: false
+        VehicleInformation:
+            properties:
+                body:
+                    type: string
+                boltPattern:
+                    type: string
+                engineConfigId:
+                    type: string
+                make:
+                    type: string
+                model:
+                    type: string
+                options:
+                    type: string
+                type:
+                    type: string
+                year:
+                    type: string
+                baseVehicleId:
+                    type: string
+            type: object
+            additionalProperties: false
+        WishListProductEntry:
+            properties:
+                product:
+                    $ref: '#/components/schemas/ProductBase'
+                vehicleInformation:
+                    $ref: '#/components/schemas/VehicleInformation'
+            required:
+                - product
+            type: object
+            additionalProperties: false
+        iAddToWishlistEntries:
+            properties:
+                wishListEntries:
+                    items:
+                        $ref: '#/components/schemas/WishListProductEntry'
+                    type: array
+            required:
+                - wishListEntries
+            type: object
+            additionalProperties: false
+        iRemoveFromWishlistEntries:
+            properties:
+                wishListEntries:
+                    items:
+                        $ref: '#/components/schemas/WishListProductEntry'
+                    type: array
+            required:
+                - wishListEntries
+            type: object
+            additionalProperties: false
+        IProductCode:
+            properties:
+                code:
+                    type: string
+                vehicleInformation:
+                    $ref: '#/components/schemas/VehicleInformation'
+            required:
+                - code
+            type: object
+            additionalProperties: false
+        IWishlistProductCodes:
+            properties:
+                products:
+                    items:
+                        $ref: '#/components/schemas/IProductCode'
+                    type: array
+            required:
+                - products
+            type: object
+            additionalProperties: false
+        IWishlistDetails:
+            properties:
+                products:
+                    items:
+                        $ref: '#/components/schemas/IProductCode'
+                    type: array
+            required:
+                - products
             type: object
             additionalProperties: false
         health:
@@ -259,66 +1400,510 @@ components:
                     format: int64
     securitySchemes: {}
 info:
-    title: '@cantire-corp/cds.badges.pandaprice-experience-api'
-    version: 1.0.0
-    description: 'Panda Price Badges API'
+    title: '@cantire-corp/cds.profile.wishlist-experience-api'
+    version: 1.11.26
+    description: 'Profile Wishlist microservice'
     license:
         name: ISC
     contact:
         name: 'CDS Team'
 openapi: 3.0.0
 paths:
-    /panda/priceBadges:
-        post:
-            operationId: GetPriceBadges
+    '/profile/wishlist/product/{productCode}':
+        put:
+            operationId: AddItemToWishlist
             responses:
                 '200':
                     description: Ok
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: '#/components/schemas/IPandaPriceBadge'
-                                type: array
-                            examples:
-                                'Example 1':
-                                    value: [{Badges: [], Banner: CTR, Store: '0337', Price: 9.99, OriginalPrice: {}, CurrentPrice: {value: 9.99, minPrice: 9.99}}]
+                                $ref: '#/components/schemas/iWishlist'
                 '400':
                     description: 'Bad Request'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ICDSError'
-                            examples:
-                                'Example 1':
-                                    value: {statusCode: 400, error: 'Bad Request', errors: ['Missing productCodes or skuCodes']}
-                '404':
-                    description: 'Not Found'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ICDSError'
-                            examples:
-                                'Example 1':
-                                    value: {statusCode: 404, message: 'Resource not found'}
-            description: 'Recieve Panda Badges and Prices for products via sku or product code'
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+            description: 'Add item to wishlist.'
             security: []
-            parameters: []
+            parameters:
+                -
+                    description: 'product code of item to be added to wishlist'
+                    in: path
+                    name: productCode
+                    required: true
+                    schema:
+                        type: string
+                    example: '0543199'
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    description: 'wishlist guid'
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+    /profile/wishlist/products:
+        put:
+            operationId: AddItemsToWishlist
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/iWishlist'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+            description: 'Add items to wishlist.'
+            security: []
+            parameters:
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    in: query
+                    name: cartId
+                    required: false
+                    schema:
+                        type: string
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    description: 'wishlist guid'
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: isGrouped
+                    required: false
+                    schema:
+                        type: boolean
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/GetPandaBadgesRequest'
+                            anyOf:
+                                -
+                                    $ref: '#/components/schemas/iAddToWishlistEntries'
+                                -
+                                    items: {type: string}
+                                    type: array
                         example:
-                            bannerId: CTR
-                            storeId: '337'
-                            productCodes:
-                                - 0789657P
-                            lang: en
-                            lowStockThresholds: []
-                            hotDealThreshold: 0
-                            limitedThreshold: 0
+                            wishListEntries:
+                                -
+                                    product: {code: '0543199'}
+        delete:
+            operationId: RemoveItemFromWishlist
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                anyOf:
+                                    - {$ref: '#/components/schemas/iWishlist'}
+                                    - {}
+                                    - {$ref: '#/components/schemas/ErrorResponse'}
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Remove item from wishlist.'
+            security: []
+            parameters:
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    description: 'wishlist guid'
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            anyOf:
+                                -
+                                    $ref: '#/components/schemas/iRemoveFromWishlistEntries'
+                                -
+                                    items: {type: string}
+                                    type: array
+                        example:
+                            - '0543199'
+    /profile/wishlist:
+        get:
+            operationId: GetWishlist
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/iWishlist'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Get wishlist.'
+            security: []
+            parameters:
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    description: 'wishlist guid'
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                    example: 5698a35b-b100-4703-adc2-16cedfd81225
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+    /profile/wishlist/v2:
+        get:
+            operationId: GetWishlistV2
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/iWishlist'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Get wishlist V2.'
+            security: []
+            parameters:
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    description: 'wishlist guid'
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+    /profile/wishlist/mergeWishlist:
+        post:
+            operationId: MergeWishlist
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/iWishlist'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Merge anonymous wishlist with wishlist of logged in user.'
+            security: []
+            parameters:
+                -
+                    description: baseSiteId
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'anonymous wishlist guid'
+                    in: query
+                    name: guid
+                    required: true
+                    schema:
+                        type: string
+                    example: 5698a35b-b100-4703-adc2-16cedfd81225
+                -
+                    description: 'id of the store for which the availability check is performed'
+                    in: query
+                    name: storeId
+                    required: false
+                    schema:
+                        type: string
+                    example: '452'
+                -
+                    description: 'language of the response'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+                -
+                    in: query
+                    name: storeLat
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                -
+                    in: query
+                    name: storeLong
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+    /profile/wishlist/productCodes:
+        get:
+            operationId: GetWishlistProductCodes
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                anyOf:
+                                    $ref: '#/components/schemas/IWishlistProductCodes'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Get product codes of the items in the wishlist'
+            security: []
+            parameters:
+                -
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
+    /profile/wishlist/details:
+        get:
+            operationId: GetWishlistDetails
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IWishlistDetails'
+                '400':
+                    description: 'Bad Request'
+                '401':
+                    description: Unauthorized
+            description: 'Get wishlist details'
+            security: []
+            parameters:
+                -
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    in: query
+                    name: guid
+                    required: false
+                    schema:
+                        type: string
+                -
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Lang'
     /health:
         get:
             tags:
@@ -328,15 +1913,12 @@ paths:
                 '200':
                     description: 'successful operation'
                     content:
-                        'application/json; charset=utf-8':
+                        '*/*':
                             schema:
                                 $ref: '#/components/schemas/health'
                 '500':
                     description: 'Internal Server Error'
                     content: {}
 servers:
-    # Added by API Auto Mocking Plugin
-    - description: SwaggerHub API Auto Mocking
-      url: https://virtserver.swaggerhub.com/CantireCorp/cds.badges-pandaprice-experience-api/1.0.0
     -
-        url: /badges
+        url: /profile-wishlist
