@@ -1,6 +1,6 @@
 PACTICIPANT ?= "cds.profile.wishlist-experience-api"
 GITHUB_REPO := "pactflow/example-bi-directional-provider-postman"
-VERSION?=1.0.0
+VERSION?=1.11.22
 BRANCH?=$(shell git rev-parse --abbrev-ref HEAD)
 
 ## ====================
