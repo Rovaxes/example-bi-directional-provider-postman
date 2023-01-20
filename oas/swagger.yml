@@ -1843,5 +1843,8 @@ paths:
                     description: 'Internal Server Error'
                     content: {}
 servers:
+    # Added by API Auto Mocking Plugin
+    - description: SwaggerHub API Auto Mocking
+      url: https://virtserver.swaggerhub.com/CantireCorp/cds.profile.wishlist-experience-api/1.11.22
     -
         url: /profile-wishlist
