@@ -1,311 +1,528 @@
-openapi: 3.0.0
-info:
-  title: '@cantire-corp/cds.notifications-sender-api'
-  description: Notification Sender API
-  contact:
-    name: CDS Team
-  license:
-    name: ISC
-  version: 1.0.0
-servers:
-  - url: http://localhost:3000/
-paths:
-  /health/:
-    get:
-      tags:
-        - Health
-      summary: Service health
-      description: Service health
-      operationId: get-health
-      parameters: []
-      responses:
-        '200':
-          description: An Health object
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/HealthGet200ApplicationJsonResponse'
-              example:
-                build: string
-                message: string
-                status: string
-                uptime: 0
-  /execute-flow:
-    post:
-      tags:
-        - Notification
-      summary: Executes flow with specified provider by template name
-      description: Executes flow with specified provider by template name
-      operationId: post-execute-flow
-      parameters: []
-      responses:
-        '200':
-          description: Execution created
-        '400':
-          description: Request parameters validation error
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/Execute-flowPost400ApplicationJsonResponse'
-              example:
-                errorCode: 200
-                errorMessage: Failed to execute flow. The requested resource /Flows/FW53d093d51446b9bf88a40f6b255d2a40/Executions was not found
-                errorDetails:
-                  - 380-681-2345
-                  - 380-681-2345
-        '500':
-          description: Internal server error
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/Execute-flowPost500ApplicationJsonResponse'
-              example:
-                status: failed
-                message: System Error.
-      requestBody:
-        content:
-          application/json; charset=utf-8:
-            schema:
-              $ref: '#/components/schemas/Execute-flowPostRequest'
-            example:
-              storeNumber: '0100'
-              template: ShareCart
-              communicationType: SMS
-              language: fr
-              provider: Twillio
-              from: 647XXXXXXX
-              destinationPhone: []
-              destinationEmail: []
-              templateContent:
-                - name: name
-                  value: test
-                - name: sc_url
-                  value: test
-  /send:
-    post:
-      tags:
-        - Notification
-      summary: Sends notification with specified provider
-      description: Sends notification with specified provider
-      operationId: post-send
-      parameters: []
-      responses:
-        '200':
-          description: Notification was successfully sent
-        '400':
-          description: Request parameters validation error
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/SendPost400ApplicationJsonResponse'
-              example:
-                errorCode: 400
-                errorMessage: No Valid Provider Account
-                errorDetails:
-                  - Please configure Store 0100 for this service or allow service through Global Account
-        '500':
-          description: Internal server error
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/SendPost500ApplicationJsonResponse'
-              example:
-                status: failed
-                message: System Error.
-      requestBody:
-        content:
-          application/json; charset=utf-8:
-            schema:
-              $ref: '#/components/schemas/SendPostRequest'
-            example:
-              storeNumber: '0100'
-              template: Chit_Order_cancelled_customer
-              communicationType: SMS
-              provider: Twilio
-              language: fr
-              destinationPhone:
-                - '6135550113'
-              destinationEmail: []
-              templateContent:
-                - name: ORDER_NUMBER
-                  value: this-is-order-number
 components:
-  securitySchemes:
-    apiKeyHeader:
-      type: apiKey
-      name: Ocp-Apim-Subscription-Key
-      in: header
-    apiKeyQuery:
-      type: apiKey
-      name: subscription-key
-      in: query
-  schemas:
-    HealthGet200ApplicationJsonResponse:
-      type: object
-      properties:
-        build:
-          type: string
-        message:
-          type: string
-        status:
-          type: string
-        uptime:
-          type: number
-    SendPostRequest:
-      required:
-        - communicationType
-        - language
-        - provider
-        - storeNumber
-        - template
-        - templateContent
-      type: object
-      properties:
-        storeNumber:
-          type: string
-        template:
-          type: string
-        communicationType:
-          type: string
-        provider:
-          type: string
-        language:
-          type: string
-        destinationEmail:
-          type: array
-          items:
+    examples: {}
+    headers: {}
+    parameters: {}
+    requestBodies: {}
+    responses: {}
+    schemas:
+        iUrl:
+            properties:
+                url:
+                    type: string
+                hreflang:
+                    type: string
+            required:
+                - url
+                - hreflang
+            type: object
+            additionalProperties: false
+        iSubCategory:
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                url:
+                    type: string
+                image:
+                    type: string
+                searchLink:
+                    type: string
+                isFitmentRequired:
+                    type: boolean
+                isRelatedCategory:
+                    type: boolean
+                subcategories:
+                    items:
+                        $ref: '#/components/schemas/iSubCategory'
+                    type: array
+            required:
+                - id
+                - name
+                - url
+                - image
+                - searchLink
+                - isFitmentRequired
+                - isRelatedCategory
+                - subcategories
+            type: object
+            additionalProperties: false
+        iBreadcrumb:
+            properties:
+                label:
+                    type: string
+                url:
+                    type: string
+            required:
+                - label
+                - url
+            type: object
+            additionalProperties: false
+        iCategory:
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                url:
+                    items:
+                        $ref: '#/components/schemas/iUrl'
+                    type: array
+                image:
+                    type: string
+                subcategories:
+                    items:
+                        $ref: '#/components/schemas/iSubCategory'
+                    type: array
+                breadcrumbList:
+                    items:
+                        $ref: '#/components/schemas/iBreadcrumb'
+                    type: array
+                isFitmentRequired:
+                    type: boolean
+                noIndex:
+                    type: boolean
+                noFollow:
+                    type: boolean
+                productWheelType:
+                    type: string
+                    nullable: true
+                defaultView:
+                    type: string
+                seoTitle:
+                    type: string
+                seoCopy:
+                    type: string
+                seoDescription:
+                    type: string
+                canonicalUrl:
+                    type: string
+                searchLink:
+                    type: string
+            required:
+                - id
+                - name
+                - description
+                - url
+                - image
+                - breadcrumbList
+                - isFitmentRequired
+                - noIndex
+                - noFollow
+                - productWheelType
+                - defaultView
+                - seoTitle
+                - seoCopy
+                - seoDescription
+                - canonicalUrl
+                - searchLink
+            type: object
+            additionalProperties: false
+        CdsError:
+            properties:
+                requestId:
+                    anyOf:
+                        -
+                            type: string
+                        -
+                            type: number
+                            format: double
+                errOrigin:
+                    type: string
+                statusCode:
+                    type: number
+                    format: double
+                error:
+                    type: string
+                message:
+                    type: string
+                errCode:
+                    type: string
+                data: {}
+                errors:
+                    items:
+                        type: string
+                    type: array
+                stack:
+                    type: string
+                isCdsError:
+                    type: boolean
+            required:
+                - message
+            type: object
+            additionalProperties: false
+        BreadcrumbData:
+            properties:
+                name:
+                    type: string
+                url:
+                    type: string
+            required:
+                - name
+                - url
+            type: object
+            additionalProperties: false
+        Image:
+            properties:
+                imageType:
+                    type: string
+                format:
+                    type: string
+                url:
+                    type: string
+                altText:
+                    type: string
+                galleryIndex:
+                    type: number
+                    format: double
+                code:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                damPath:
+                    type: string
+                order:
+                    type: string
+                videoImageThumbnailURL:
+                    type: string
+                videoImageThumbnailDAMPath:
+                    type: string
+                imageSpinIndicator:
+                    type: boolean
+                isListingThumbnailImage:
+                    type: boolean
+                mediaType:
+                    type: string
+                damCreateDate:
+                    type: string
+                    format: date-time
+                isPrimary:
+                    type: boolean
+            required:
+                - imageType
+                - format
+                - url
+                - altText
+                - galleryIndex
+                - code
+                - name
+                - description
+                - damPath
+                - order
+                - videoImageThumbnailURL
+                - videoImageThumbnailDAMPath
+                - imageSpinIndicator
+                - isListingThumbnailImage
+                - mediaType
+                - damCreateDate
+                - isPrimary
+            type: object
+            additionalProperties: false
+        HreflangLink:
+            properties:
+                href:
+                    type: string
+                hreflang:
+                    type: string
+            required:
+                - href
+                - hreflang
+            type: object
+            additionalProperties: false
+        CategoryHierarchy:
+            properties:
+                breadcrumbData:
+                    items:
+                        $ref: '#/components/schemas/BreadcrumbData'
+                    type: array
+                canonicalURL:
+                    type: string
+                categoryWheelType:
+                    type: string
+                currentCategoryImage:
+                    $ref: '#/components/schemas/Image'
+                description:
+                    type: string
+                fitmentRequired:
+                    type: boolean
+                hreflangLinkData:
+                    items:
+                        $ref: '#/components/schemas/HreflangLink'
+                    type: array
+                id:
+                    type: string
+                image:
+                    $ref: '#/components/schemas/Image'
+                lastModified:
+                    type: string
+                    format: date-time
+                metaRobot:
+                    type: string
+                name:
+                    type: string
+                productListFormat:
+                    type: string
+                seoDescription:
+                    type: string
+                seoTitle:
+                    type: string
+                seoCopyBlock:
+                    type: string
+                subcategories:
+                    items:
+                        $ref: '#/components/schemas/CategoryHierarchy'
+                    type: array
+                url:
+                    type: string
+                isRelatedCategory:
+                    type: boolean
+            required:
+                - breadcrumbData
+                - canonicalURL
+                - categoryWheelType
+                - currentCategoryImage
+                - description
+                - fitmentRequired
+                - hreflangLinkData
+                - id
+                - image
+                - lastModified
+                - metaRobot
+                - name
+                - productListFormat
+                - seoDescription
+                - seoTitle
+                - seoCopyBlock
+                - subcategories
+                - url
+                - isRelatedCategory
+            type: object
+            additionalProperties: false
+        LanguageEnum:
+            enum:
+                - en
+                - fr_ca
+                - fr_CA
+                - en_ca
+                - en_CA
+                - fr
             type: string
-        destinationPhone:
-          type: array
-          items:
+        iNavCategory:
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                url:
+                    type: string
+                searchLink:
+                    type: string
+                image:
+                    type: string
+                subcategories:
+                    items:
+                        $ref: '#/components/schemas/iNavCategory'
+                    type: array
+            required:
+                - id
+                - name
+                - url
+            type: object
+            additionalProperties: false
+        FedCategoriesResponse:
+            properties:
+                categories:
+                    items:
+                        $ref: '#/components/schemas/iNavCategory'
+                    type: array
+            required:
+                - categories
+            type: object
+            additionalProperties: false
+        Scope:
+            enum:
+                - MEGANAV
+                - SITEMAP
+                - ""
             type: string
-        templateContent:
-          type: array
-          items:
+        health:
             type: object
             properties:
-              name:
-                type: string
-              value:
-                type: string
-    SendPost400ApplicationJsonResponse:
-      required:
-        - errorCode
-        - errorDetails
-        - errorMessage
-      type: object
-      properties:
-        errorCode:
-          type: integer
-        errorMessage:
-          type: string
-        errorDetails:
-          type: array
-          items:
-            type: string
-        template:
-          type: string
-        communicationType:
-          type: string
-        provider:
-          type: string
-      example:
-        errorCode: 400
-        errorMessage: No Valid Provider Account
-        errorDetails:
-          - Please configure Store 0100 for this service or allow service through Global Account
-        template: ShareCart
-        communicationType: SMS
-        provider: Twilio
-    SendPost500ApplicationJsonResponse:
-      required:
-        - message
-        - status
-      type: object
-      properties:
-        status:
-          type: string
-        message:
-          type: string
-      example:
-        status: failed
-        message: System Error.
-    Execute-flowPostRequest:
-      required:
-        - communicationType
-        - language
-        - provider
-        - storeNumber
-        - template
-        - templateContent
-      type: object
-      properties:
-        storeNumber:
-          type: string
-        template:
-          type: string
-        communicationType:
-          type: string
-        provider:
-          type: string
-        language:
-          type: string
-        destinationEmail:
-          type: array
-          items:
-            type: string
-        destinationPhone:
-          type: array
-          items:
-            type: string
-        templateContent:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              value:
-                type: string
-    Execute-flowPost400ApplicationJsonResponse:
-      required:
-        - errorCode
-        - errorDetails
-        - errorMessage
-      type: object
-      properties:
-        errorCode:
-          type: integer
-        errorMessage:
-          type: string
-        errorDetails:
-          type: array
-          items:
-            type: string
-        template:
-          type: string
-        communicationType:
-          type: string
-        provider:
-          type: string
-      example:
-        errorCode: 200
-        errorMessage: Failed to execute flow. The requested resource /Flows/FW53d093d51446b9bf88a40f6b255d2a40/Executions was not found
-        errorDetails:
-          - 380-681-2345
-          - 380-681-2345
-        template: ShareCart
-        provider: Twilio
-    Execute-flowPost500ApplicationJsonResponse:
-      required:
-        - message
-        - status
-      type: object
-      properties:
-        status:
-          type: string
-        message:
-          type: string
-      example:
-        status: failed
-        message: System Error.
+                name:
+                    type: string
+                    description: 'The name of the app'
+                    example: category_api_microservice
+                status:
+                    type: string
+                    description: 'the server status'
+                    example: OK
+                    enum:
+                        - OK
+                message:
+                    type: string
+                    description: 'a message of the server status'
+                    example: 'Service is up and running.'
+                build:
+                    type: string
+                    description: 'a build number of the application'
+                    example: 1.0.0
+                uptime:
+                    type: integer
+                    description: 'an uptime of the application in milliseconds'
+                    format: int64
+    securitySchemes: {}
+info:
+    title: '@cantire-corp/cds.category-experience-api'
+    version: 1.0.0
+    description: 'Category Experience API'
+    license:
+        name: ISC
+    contact:
+        name: 'CDS Team'
+openapi: 3.0.0
+paths:
+    '/api/v1/categories/{categoryId}':
+        get:
+            operationId: GetCategory
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/iCategory'
+                            examples:
+                              'Example 1':
+                                  value: {id: DC0000004, name: 'Tools & Hardware', description: 'Whether you’re a weekend DIYer or a professional contractor, we have the quality tools and accessories you need to design, build and fix with confidence.', url: [{url: /fr/cat/outils-et-quincaillerie-DC0000004.html, hreflang: fr}, {url: /en/cat/tools-hardware-DC0000004.html, hreflang: en}, {url: /en/cat/tools-hardware-DC0000004.html, hreflang: x-default}], image: 'https://media-www.canadiantire.ca/product/automotive/auto-maintenance/auto-shop-equipment-supplies/0095006/certified-12v-inflator-b6652fd3-5f83-4dd4-9a8b-faf51d9a5e94.png', subcategories: [], breadcrumbList: [{label: 'Tools & Hardware', url: /en/cat/tools-hardware-DC0000004.html}], isFitmentRequired: false, noFollow: false, noIndex: false, productWheelType: null, defaultView: GRID, seoTitle: 'Tools & Hardware', seoCopy: "", seoDescription: 'Shop Canadian Tire online for quality power and hand tools, replacement parts, paint, garage storage and much more. Pick up in store at any of 500+ locations.', canonicalUrl: "", searchLink: '?q1=DC0000004;x1=ast-id-level-1;lang=en_CA'}
+                '400':
+                    description: 'Bad Request'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CdsError'
+                            examples:
+                                'Example 1':
+                                    value: {statusCode: 400, message: 'Could not retrieve data from Hybris.', errors: ['Base site Sample doesn''t exist'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
+                '500':
+                    description: 'Internal Server Error'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CdsError'
+                            examples:
+                                'Example 1':
+                                    value: {statusCode: 500, message: 'Could not retrieve data from Hybris.', errors: ['Category with code ''DD045445'' in CatalogVersion ''ctcCanadianTireProductCatalog.Staged'' not found!'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
+            description: 'Get the category tree for a provided identifier.'
+            security: []
+            parameters:
+                -
+                    description: 'a given base site ID'
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'a given category ID'
+                    in: path
+                    name: categoryId
+                    required: true
+                    schema:
+                        type: string
+                    example: DC0000004
+                -
+                    description: 'specification of language for results [en/en_ca/fr_ca allowed - en default]'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/LanguageEnum'
+                -
+                    description: 'Optional depth 1-5'
+                    in: query
+                    name: level
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+    /api/v1/categories:
+        get:
+            operationId: GetCategories
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FedCategoriesResponse'
+                            examples:
+                                'Example 1':
+                                    value: { categories: [ { "name": "Tools & Hardware", "id": "DC0000004", "url": "/en/cat/tools-hardware-DC0000004.html", "image": "" }]}
+                '400':
+                    description: 'Bad Request'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CdsError'
+                            examples:
+                                'Example 1':
+                                    value: {statusCode: 400, message: 'Could not retrieve data from Hybris.', errors: ['Base site Sample doesn''t exist'], requestId: 0, errCode: '0', errOrigin: CDS, isCdsError: true}
+            description: 'Get the category tree for a provided identifier.'
+            security: []
+            parameters:
+                -
+                    description: 'a given base site ID'
+                    in: header
+                    name: baseSiteId
+                    required: true
+                    schema:
+                        type: string
+                    example: CTR
+                -
+                    description: 'Optional depth 1-5'
+                    in: query
+                    name: level
+                    required: false
+                    schema:
+                        format: double
+                        type: number
+                    example: 1
+                -
+                    description: 'language for results [en/en_ca/fr_ca allowed - en default]'
+                    in: query
+                    name: lang
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/LanguageEnum'
+                -
+                    in: query
+                    name: scope
+                    required: false
+                    schema:
+                        $ref: '#/components/schemas/Scope'
+    /health:
+        get:
+            tags:
+                - health
+            summary: 'The health status of the service'
+            responses:
+                '200':
+                    description: 'successful operation'
+                    content:
+                        '*/*':
+                            schema:
+                                $ref: '#/components/schemas/health'
+                '500':
+                    description: 'Internal Server Error'
+                    content: {}
+servers:
+    # Added by API Auto Mocking Plugin
+    - description: SwaggerHub API Auto Mocking
+      url: https://virtserver.swaggerhub.com/CantireCorp/cds.category-experience-api/1.0.0
+    -
+        url: /category
